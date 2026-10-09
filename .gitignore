@@ -1,0 +1,7 @@
+node_modules/
+dist/
+dist/server.cjs
+*.log
+.env
+.env.local
+.env.*.local
