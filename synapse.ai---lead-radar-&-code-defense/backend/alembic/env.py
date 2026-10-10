@@ -6,14 +6,14 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 # Import Synapse base metadata and models
-from app.core.config import settings
-from app.core.database import Base
+from app.shared.config import settings
+from app.shared.database import Base
 
 # Ensure all domain models are imported so Base.metadata contains them
-import app.tab1_leads.feature1_ingestion.models
-import app.tab1_leads.feature2_outreach.models
-import app.tab2_assessment.feature1_code_verifier.models
-import app.tab2_assessment.feature2_voice_interview.models
+import app.modules.job_lead_radar
+import app.modules.code_verifier
+import app.modules.voice_defense
+import app.modules.leaderboard
 
 config = context.config
 

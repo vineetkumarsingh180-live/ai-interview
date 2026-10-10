@@ -5,3 +5,5 @@ dist/server.cjs
 .env
 .env.local
 .env.*.local
+/CLAUDE.md
+/handoff.md

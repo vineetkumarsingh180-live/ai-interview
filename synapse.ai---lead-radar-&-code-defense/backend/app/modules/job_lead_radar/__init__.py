@@ -1,0 +1,6 @@
+"""Job Lead Radar module public API. Import from here only (never from submodules)."""
+
+from . import models  # noqa: F401  (registers tables with SQLAlchemy metadata)
+from .router import router
+
+__all__ = ["router"]

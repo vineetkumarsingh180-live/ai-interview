@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+/*
+ * Synapse.AI design system: warm beige.
+ *
+ * All colour lives here as semantic tokens. Components use utilities generated
+ * from these names (bg-canvas, text-ink, border-line, shadow-clay, ...) and never
+ * raw hex values. To retheme, change this block only.
+ *
+ * Contrast notes (WCAG AA, normal text >= 4.5:1):
+ *   ink       on canvas / surface / canvas-alt / sand   >= 9:1
+ *   ink-soft  on canvas / surface only                  4.7-5.0:1   (4.2:1 on canvas-alt / tints = FAILS AA: use ink-alt there)
+ *   ink-alt   on canvas-alt / tints                     ~5.0:1      (secondary text on tinted backgrounds)
+ *   surface   on mocha                                  ~5.6:1      (primary button label)
+ *   success / warm-strong / danger on their *-tint      >= 4.6:1
+ *   `warm` (#B77949) is only ~3.5:1 on surface: use it for icons, borders and focus rings,
+ *   and use `warm-strong` for warm-coloured text.
+ */
+@theme {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Official palette */
+  --color-canvas: #F8F5EF;       /* main background */
+  --color-canvas-alt: #EEE7DC;   /* secondary background, wells */
+  --color-surface: #FFFCF7;      /* cards */
+  --color-sand: #DED1BF;         /* sand surface: selected rows, tracks */
+  --color-taupe: #B8A58D;        /* decorative strokes, disabled accents */
+  --color-mocha: #79634F;        /* primary action / brand */
+  --color-ink: #302B27;          /* primary text */
+  --color-ink-soft: #756C62;     /* secondary text (on canvas / surface only) */
+  --color-success: #426A60;      /* success accent */
+  --color-warm: #B77949;         /* warm accent (icons, borders, focus) */
+
+  /* Derived states */
+  --color-mocha-hover: #6A5644;
+  --color-mocha-active: #5A4838;
+  --color-mocha-tint: #EFE6DA;   /* selected / hover fill */
+  --color-ink-alt: #675E54;      /* secondary text on canvas-alt and tints */
+  --color-success-tint: #E3ECE8;
+  --color-success-strong: #355A51;
+  --color-warm-strong: #8F5A30;  /* warm text */
+  --color-warm-tint: #F4E5D6;
+  --color-danger: #9A4538;
+  --color-danger-tint: #F5E3DE;
+  --color-line: #E6DCCB;         /* hairline borders */
+  --color-line-strong: #D3C4AE;  /* input / control borders */
+  --color-scrim: rgb(48 43 39 / 0.45);
+
+  /* Soft claymorphism: warm, restrained shadows (no glow) */
+  --shadow-clay: 0 1px 0 rgb(255 255 255 / 0.9) inset, 4px 6px 16px rgb(121 99 79 / 0.12), -3px -3px 10px rgb(255 255 255 / 0.85);
+  --shadow-clay-hover: 0 1px 0 rgb(255 255 255 / 0.9) inset, 6px 10px 22px rgb(121 99 79 / 0.18), -3px -3px 10px rgb(255 255 255 / 0.9);
+  --shadow-well: inset 2px 2px 5px rgb(121 99 79 / 0.14), inset -2px -2px 5px rgb(255 255 255 / 0.8);
+  --shadow-pop: 0 20px 48px rgb(48 43 39 / 0.25);
+  --shadow-focus: 0 0 0 3px rgb(183 121 73 / 0.35);
+}
+
+@layer base {
+  html {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-warm);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-sand);
+    color: var(--color-ink);
+  }
+}
+
+@layer components {
+  /* ---------- Surfaces ---------- */
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow-clay);
+  }
+  .card-hover {
+    transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  }
+  .card-hover:hover {
+    box-shadow: var(--shadow-clay-hover);
+    border-color: var(--color-line-strong);
+    transform: translateY(-2px);
+  }
+  .well {
+    background: var(--color-canvas-alt);
+    border: 1px solid var(--color-line);
+    border-radius: 0.875rem;
+    box-shadow: var(--shadow-well);
+  }
+  .modal-panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line-strong);
+    box-shadow: var(--shadow-pop);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  }
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn:focus-visible { box-shadow: var(--shadow-focus); outline-color: var(--color-warm); }
+
+  .btn-primary {
+    background: var(--color-mocha);
+    color: var(--color-surface);
+    box-shadow: 0 2px 6px rgb(121 99 79 / 0.3);
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--color-mocha-hover); }
+  .btn-primary:active:not(:disabled) { background: var(--color-mocha-active); }
+
+  .btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    border-color: var(--color-line-strong);
+  }
+  .btn-secondary:hover:not(:disabled) { background: var(--color-canvas-alt); }
+  .btn-secondary:active:not(:disabled) { background: var(--color-sand); }
+
+  .btn-danger {
+    background: var(--color-danger-tint);
+    color: var(--color-danger);
+    border-color: color-mix(in srgb, var(--color-danger) 35%, transparent);
+  }
+  .btn-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--color-danger) 14%, var(--color-danger-tint)); }
+
+  .btn-icon { padding: 0; width: 2.5rem; }
+
+  /* ---------- Form controls ---------- */
+  .field {
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    border: 1px solid var(--color-line-strong);
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field::placeholder { color: var(--color-ink-soft); }
+  .field:hover:not(:disabled) { border-color: var(--color-taupe); }
+  .field:focus { outline: none; border-color: var(--color-warm); box-shadow: var(--shadow-focus); }
+  .field:disabled { background: var(--color-canvas-alt); color: var(--color-ink-alt); cursor: not-allowed; }
+  .field-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-ink-alt);
+  }
+
+  /* ---------- Chips, badges ---------- */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.25rem;
+    padding: 0.375rem 0.875rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 9999px;
+    background: var(--color-surface);
+    color: var(--color-ink-soft);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .chip:hover { background: var(--color-canvas-alt); color: var(--color-ink); }
+  .chip:focus-visible { box-shadow: var(--shadow-focus); }
+  .chip[aria-pressed="true"] {
+    background: var(--color-mocha);
+    border-color: var(--color-mocha);
+    color: var(--color-surface);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.625rem;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .badge-neutral { background: var(--color-canvas-alt); color: var(--color-ink-alt); border-color: var(--color-line-strong); }
+  .badge-success { background: var(--color-success-tint); color: var(--color-success); border-color: color-mix(in srgb, var(--color-success) 25%, transparent); }
+  .badge-warm { background: var(--color-warm-tint); color: var(--color-warm-strong); border-color: color-mix(in srgb, var(--color-warm) 35%, transparent); }
+  .badge-danger { background: var(--color-danger-tint); color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 30%, transparent); }
+
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-alt);
+  }
+
+  /* Voice orb: calm radial, no neon */
+  .orb-surface {
+    background: radial-gradient(circle at 32% 28%, var(--color-taupe), var(--color-mocha) 62%, var(--color-mocha-active) 100%);
+    box-shadow: 0 10px 28px rgb(121 99 79 / 0.35), inset 0 2px 4px rgb(255 255 255 / 0.35);
+  }
+}
+
+/* Scrollbars */
+* { scrollbar-width: thin; scrollbar-color: var(--color-taupe) transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-taupe); border-radius: 9999px; border: 2px solid var(--color-canvas); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-mocha); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,23 +1,21 @@
 """
 Synapse.AI FastAPI Application Factory
-Mounts domain feature routers for Tab 1 (Leads Radar) and Tab 2 (Code Assessment & Voice Defense).
+Composes the four modules: Job Lead Radar, Code Verifier, Voice Defense, Leaderboard.
 """
 
 import logging
+from typing import Literal
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.config import settings
-from app.core.database import init_db
-
-# Import Tab 1 routers
-from app.tab1_leads.feature1_ingestion.router import router as ingestion_router
-from app.tab1_leads.feature2_outreach.router import router as outreach_router
-
-# Import Tab 2 routers
-from app.tab2_assessment.feature1_code_verifier.router import router as verifier_router
-from app.tab2_assessment.feature2_voice_interview.router import router as voice_router
+from app.shared.config import settings
+from app.shared.database import check_database
+from app.core.api import build_api_router
+from app.core.wiring import wire_dependencies
+from app.shared.errors import register_exception_handlers
+from app.shared.schemas import ApiModel
+from app.shared.gemini import is_configured
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,15 +25,23 @@ logger = logging.getLogger("synapse.app")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Lifecycle manager for database initialization and connection teardown"""
-    logger.info("Initializing Synapse.AI domain models and pgvector schemas...")
-    try:
-        await init_db()
-        logger.info("Database schemas and pgvector extension ready.")
-    except Exception as e:
-        logger.warning(f"Database initialization deferred (running in local container sandbox): {e}")
+    """Startup: report database/AI availability. Never creates schema (Alembic owns it)."""
+    if await check_database():
+        logger.info("Database reachable.")
+    else:
+        logger.warning("Database unreachable: DB-backed routes will return 503 until it is available.")
+    if not settings.GEMINI_API_KEY:
+        logger.info("GEMINI_API_KEY not set: AI features will report 'unavailable'.")
     yield
     logger.info("Shutting down Synapse.AI backend.")
+
+class HealthResponse(ApiModel):
+    status: Literal["ok", "degraded"]
+    service: str
+    version: str
+    database: Literal["connected", "unreachable"]
+    gemini: Literal["configured", "not_configured"]
+
 
 def create_application() -> FastAPI:
     application = FastAPI(
@@ -50,29 +56,28 @@ def create_application() -> FastAPI:
     # Set up CORS for frontend integration
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.BACKEND_CORS_ORIGINS,
-        allow_credentials=True,
+        allow_origins=settings.CORS_ORIGINS,
+        allow_credentials=False,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    # Mount Tab 1: Lead Radar Domain Routers
-    application.include_router(ingestion_router, prefix=settings.API_V1_STR)
-    application.include_router(outreach_router, prefix=settings.API_V1_STR)
+    # Mount all module routers (composition lives in app/core/api.py)
+    application.include_router(build_api_router(), prefix=settings.API_V1_STR)
+    wire_dependencies(application)
 
-    # Mount Tab 2: Code Verification & Voice Defense Routers
-    application.include_router(verifier_router, prefix=settings.API_V1_STR)
-    application.include_router(voice_router, prefix=settings.API_V1_STR)
+    register_exception_handlers(application)
 
-    @application.get("/api/health", tags=["Health"])
+    @application.get("/api/health", response_model=HealthResponse, tags=["Health"])
     async def health_check():
-        return {
-            "status": "healthy",
-            "service": settings.PROJECT_NAME,
-            "version": settings.VERSION,
-            "tab1_modules": ["feature1_ingestion", "feature2_outreach"],
-            "tab2_modules": ["feature1_code_verifier", "feature2_voice_interview"]
-        }
+        database = await check_database()
+        return HealthResponse(
+            status="ok" if database else "degraded",
+            service=settings.PROJECT_NAME,
+            version=settings.VERSION,
+            database="connected" if database else "unreachable",
+            gemini="configured" if is_configured() else "not_configured",
+        )
 
     return application
 
