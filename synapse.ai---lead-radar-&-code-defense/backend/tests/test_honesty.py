@@ -42,13 +42,16 @@ def with_ai(monkeypatch):
 
 
 def _gemini_returns(monkeypatch, module, text, usage=None):
-    async def fake(payload, **kwargs):
-        body = {"candidates": [{"content": {"parts": [{"text": text}]}}]}
-        if usage:
-            body["usageMetadata"] = usage
-        return body
+    """Stub the HTTP layer of the real GeminiProvider; AIService, adapters and services all run for real."""
+    from aiservice.providers.gemini import GeminiProvider
 
-    monkeypatch.setattr(f"app.modules.{module}.generate_content", fake)
+    async def fake(self, body):
+        out = {"candidates": [{"content": {"parts": [{"text": text}]}}]}
+        if usage:
+            out["usageMetadata"] = usage
+        return out
+
+    monkeypatch.setattr(GeminiProvider, "_post_once", fake)
 
 
 # ---- source-level guard: known fabricated literals must never come back -----------------------
@@ -100,6 +103,18 @@ def test_ingest_hiring_lead_uses_only_stated_fields(api, with_ai, monkeypatch):
                      "urgencyTier", "contactAnchor", "matchScore", "clearanceRequired"):
         assert lead[unstated] is None, unstated
     assert lead["isDemo"] is False
+
+
+def test_ai_claims_not_present_in_the_post_are_dropped_and_the_post_needs_review(api, with_ai, monkeypatch):
+    """The model invents a company and a salary; AIService verifies against the post and drops both."""
+    _gemini_returns(monkeypatch, "job_lead_radar.service",
+                    '{"is_hiring": true, "role_title": "Rust Engineer", "company_name": "Globex", '
+                    '"comp_min": 300000, "comp_max": 400000, "tech_stack": ["Rust", "Cobol"]}')
+    db = FakeDb()
+    body = api(db).post("/api/v1/leads/ingest/trigger",
+                        json={"platform": "twitter", "rawContent": "We are hiring a Rust Engineer, remote."}).json()
+    assert body["status"] == "needs_review" and body["lead"] is None     # company not in the post
+    assert not [o for o in db.added if isinstance(o, JobLead)]
 
 
 def test_ingest_hiring_without_role_is_needs_review(api, with_ai, monkeypatch):

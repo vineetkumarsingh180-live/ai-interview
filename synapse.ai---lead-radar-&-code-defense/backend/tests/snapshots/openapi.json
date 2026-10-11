@@ -1,2911 +1,3049 @@
 {
- "components": {
-  "schemas": {
-   "BenchmarkSuiteResponse": {
-    "description": "Measured benchmark facts. Any value that was not measured is null.",
-    "properties": {
-     "createdAt": {
-      "format": "date-time",
-      "title": "Createdat",
-      "type": "string"
-     },
-     "cyclomaticComplexity": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Cyclomaticcomplexity"
-     },
-     "executionTimeMs": {
-      "anyOf": [
-       {
-        "type": "integer"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Executiontimems"
-     },
-     "id": {
-      "format": "uuid",
-      "title": "Id",
-      "type": "string"
-     },
-     "repoId": {
-      "format": "uuid",
-      "title": "Repoid",
-      "type": "string"
-     },
-     "secVulnerabilitiesCount": {
-      "anyOf": [
-       {
-        "type": "integer"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Secvulnerabilitiescount"
-     },
-     "suiteLogOutput": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Suitelogoutput"
-     },
-     "testCoveragePct": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Testcoveragepct"
-     }
-    },
-    "required": [
-     "id",
-     "repoId",
-     "createdAt"
-    ],
-    "title": "BenchmarkSuiteResponse",
-    "type": "object"
-   },
-   "CandidateRepoDetailResponse": {
-    "properties": {
-     "benchmark": {
-      "anyOf": [
-       {
-        "$ref": "#/components/schemas/BenchmarkSuiteResponse"
-       },
-       {
-        "type": "null"
-       }
-      ]
-     },
-     "branch": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Branch"
-     },
-     "candidateAvatarUrl": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Candidateavatarurl"
-     },
-     "candidateGithubHandle": {
-      "title": "Candidategithubhandle",
-      "type": "string"
-     },
-     "candidateName": {
-      "title": "Candidatename",
-      "type": "string"
-     },
-     "commitSha": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Commitsha"
-     },
-     "evaluation": {
-      "anyOf": [
-       {
-        "$ref": "#/components/schemas/CodeEvaluationResponse"
-       },
-       {
-        "type": "null"
-       }
-      ]
-     },
-     "id": {
-      "format": "uuid",
-      "title": "Id",
-      "type": "string"
-     },
-     "isDemo": {
-      "default": false,
-      "description": "True for clearly labelled development fixtures",
-      "title": "Isdemo",
-      "type": "boolean"
-     },
-     "language": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Language"
-     },
-     "repoName": {
-      "title": "Reponame",
-      "type": "string"
-     },
-     "repoUrl": {
-      "title": "Repourl",
-      "type": "string"
-     },
-     "status": {
-      "description": "awaiting_analysis | analyzing | analyzed | failed",
-      "title": "Status",
-      "type": "string"
-     },
-     "submittedAt": {
-      "format": "date-time",
-      "title": "Submittedat",
-      "type": "string"
-     },
-     "targetRole": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Targetrole"
-     }
-    },
-    "required": [
-     "id",
-     "candidateName",
-     "candidateGithubHandle",
-     "repoUrl",
-     "repoName",
-     "status",
-     "submittedAt"
-    ],
-    "title": "CandidateRepoDetailResponse",
-    "type": "object"
-   },
-   "CodeEvaluationResponse": {
-    "description": "A written/scored evaluation. Scores are optional model/analyst opinions, never verdicts.",
-    "properties": {
-     "architectureScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Architecturescore"
-     },
-     "compositeHealthScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Compositehealthscore"
-     },
-     "concurrencySafetyScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Concurrencysafetyscore"
-     },
-     "evaluatedAt": {
-      "format": "date-time",
-      "title": "Evaluatedat",
-      "type": "string"
-     },
-     "flaggedAnomalies": {
-      "items": {
-       "additionalProperties": true,
-       "type": "object"
-      },
-      "title": "Flaggedanomalies",
-      "type": "array"
-     },
-     "id": {
-      "format": "uuid",
-      "title": "Id",
-      "type": "string"
-     },
-     "maintainabilityScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Maintainabilityscore"
-     },
-     "recommendedDefenseTopics": {
-      "items": {
-       "type": "string"
-      },
-      "title": "Recommendeddefensetopics",
-      "type": "array"
-     },
-     "repoId": {
-      "format": "uuid",
-      "title": "Repoid",
-      "type": "string"
-     },
-     "rubricBreakdown": {
-      "additionalProperties": true,
-      "title": "Rubricbreakdown",
-      "type": "object"
-     },
-     "summaryVerdict": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Summaryverdict"
-     }
-    },
-    "required": [
-     "id",
-     "repoId",
-     "evaluatedAt"
-    ],
-    "title": "CodeEvaluationResponse",
-    "type": "object"
-   },
-   "ErrorResponse": {
-    "description": "Every non-2xx response has this shape.",
-    "properties": {
-     "code": {
-      "title": "Code",
-      "type": "string"
-     },
-     "detail": {
-      "title": "Detail",
-      "type": "string"
-     },
-     "errors": {
-      "anyOf": [
-       {
-        "items": {
-         "$ref": "#/components/schemas/FieldError"
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Synapse.AI",
+    "version": "3.0.0"
+  },
+  "paths": {
+    "/api/v1/leads/ingest/trigger": {
+      "post": {
+        "tags": [
+          "Job Lead Radar"
+        ],
+        "summary": "Submit a social post; it is stored, then analysed (see `status`)",
+        "operationId": "trigger_ingestion_api_v1_leads_ingest_trigger_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RawPostCreate"
+              }
+            }
+          },
+          "required": true
         },
-        "type": "array"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Errors"
-     }
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IngestOutcome"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     },
-    "required": [
-     "detail",
-     "code"
-    ],
-    "title": "ErrorResponse",
-    "type": "object"
-   },
-   "FieldError": {
-    "properties": {
-     "field": {
-      "title": "Field",
-      "type": "string"
-     },
-     "message": {
-      "title": "Message",
-      "type": "string"
-     }
+    "/api/v1/leads/ingest/parse-text": {
+      "post": {
+        "tags": [
+          "Job Lead Radar"
+        ],
+        "summary": "Run the AI extraction on arbitrary text without storing anything",
+        "operationId": "parse_raw_text_api_v1_leads_ingest_parse_text_post",
+        "parameters": [
+          {
+            "name": "text_content",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000,
+              "title": "Text Content"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "twitter",
+                "linkedin",
+                "reddit",
+                "telegram"
+              ],
+              "type": "string",
+              "default": "twitter",
+              "title": "Platform"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParsedLeadExtraction"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     },
-    "required": [
-     "field",
-     "message"
-    ],
-    "title": "FieldError",
-    "type": "object"
-   },
-   "HealthResponse": {
-    "properties": {
-     "database": {
-      "enum": [
-       "connected",
-       "unreachable"
-      ],
-      "title": "Database",
-      "type": "string"
-     },
-     "gemini": {
-      "enum": [
-       "configured",
-       "not_configured"
-      ],
-      "title": "Gemini",
-      "type": "string"
-     },
-     "service": {
-      "title": "Service",
-      "type": "string"
-     },
-     "status": {
-      "enum": [
-       "ok",
-       "degraded"
-      ],
-      "title": "Status",
-      "type": "string"
-     },
-     "version": {
-      "title": "Version",
-      "type": "string"
-     }
+    "/api/v1/leads/ingest/recent": {
+      "get": {
+        "tags": [
+          "Job Lead Radar"
+        ],
+        "summary": "Recent analysed leads (newest first)",
+        "operationId": "get_recent_leads_api_v1_leads_ingest_recent_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 25,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "twitter",
+                    "linkedin",
+                    "reddit",
+                    "telegram"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Platform"
+            }
+          },
+          {
+            "name": "min_score",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "maximum": 100.0,
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Score"
+            }
+          },
+          {
+            "name": "includeDemo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Include labelled demo fixtures",
+              "default": true,
+              "title": "Includedemo"
+            },
+            "description": "Include labelled demo fixtures"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobLeadResponse"
+                  },
+                  "title": "Response Get Recent Leads Api V1 Leads Ingest Recent Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     },
-    "required": [
-     "status",
-     "service",
-     "version",
-     "database",
-     "gemini"
-    ],
-    "title": "HealthResponse",
-    "type": "object"
-   },
-   "IngestOutcome": {
-    "description": "Result of submitting a post. The raw post is always stored; `status` says what happened next.",
-    "properties": {
-     "lead": {
-      "anyOf": [
-       {
-        "$ref": "#/components/schemas/JobLeadResponse"
-       },
-       {
-        "type": "null"
-       }
-      ]
-     },
-     "rawPostId": {
-      "format": "uuid",
-      "title": "Rawpostid",
-      "type": "string"
-     },
-     "reason": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Reason"
-     },
-     "status": {
-      "enum": [
-       "created",
-       "discarded",
-       "awaiting_analysis",
-       "needs_review"
-      ],
-      "title": "Status",
-      "type": "string"
-     }
+    "/api/v1/leads/ingest/telemetry": {
+      "get": {
+        "tags": [
+          "Job Lead Radar"
+        ],
+        "summary": "Ingestion counts over the last 24 hours, computed from stored posts",
+        "operationId": "get_telemetry_api_v1_leads_ingest_telemetry_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IngestionTelemetryResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     },
-    "required": [
-     "status",
-     "rawPostId"
-    ],
-    "title": "IngestOutcome",
-    "type": "object"
-   },
-   "IngestionTelemetryResponse": {
-    "properties": {
-     "avgLatencyMs": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "description": "Null: latency is not measured",
-      "title": "Avglatencyms"
-     },
-     "awaitingAnalysisCount": {
-      "title": "Awaitinganalysiscount",
-      "type": "integer"
-     },
-     "channelsMonitored": {
-      "items": {
-       "type": "string"
+    "/api/v1/leads/outreach/generate": {
+      "post": {
+        "tags": [
+          "Job Lead Radar"
+        ],
+        "summary": "Draft an outreach message with the AI provider (503 when unavailable)",
+        "operationId": "generate_outreach_api_v1_leads_outreach_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OutreachDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutreachDraftResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/leads/search": {
+      "post": {
+        "tags": [
+          "Job Lead Radar"
+        ],
+        "summary": "Keyword search over leads (semantic search is not available yet)",
+        "operationId": "search_leads_api_v1_leads_search_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadSearchQuery"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LeadSearchHit"
+                  },
+                  "type": "array",
+                  "title": "Response Search Leads Api V1 Leads Search Post"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/leads/outreach/history": {
+      "get": {
+        "tags": [
+          "Job Lead Radar"
+        ],
+        "summary": "Previously generated drafts (newest first)",
+        "operationId": "get_outreach_history_api_v1_leads_outreach_history_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OutreachDraftResponse"
+                  },
+                  "title": "Response Get Outreach History Api V1 Leads Outreach History Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessment/repo/submit": {
+      "post": {
+        "tags": [
+          "Code Verifier"
+        ],
+        "summary": "Register a repository for analysis (stored as awaiting_analysis; nothing is scored)",
+        "operationId": "submit_repo_api_v1_assessment_repo_submit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepoSubmissionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateRepoDetailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessment/repo/recent": {
+      "get": {
+        "tags": [
+          "Code Verifier"
+        ],
+        "summary": "Submitted repositories with their measured results, if any (newest first)",
+        "operationId": "get_recent_repos_api_v1_assessment_repo_recent_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "includeDemo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Include labelled demo fixtures",
+              "default": true,
+              "title": "Includedemo"
+            },
+            "description": "Include labelled demo fixtures"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CandidateRepoDetailResponse"
+                  },
+                  "title": "Response Get Recent Repos Api V1 Assessment Repo Recent Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessment/repo/{repo_id}": {
+      "get": {
+        "tags": [
+          "Code Verifier"
+        ],
+        "summary": "One repository and its results",
+        "operationId": "get_repo_detail_api_v1_assessment_repo__repo_id__get",
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Repo Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateRepoDetailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessment/voice/leaderboard": {
+      "get": {
+        "tags": [
+          "Leaderboard"
+        ],
+        "summary": "Assessed candidates (newest first); unmeasured scores are null",
+        "operationId": "get_leaderboard_api_v1_assessment_voice_leaderboard_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LeaderboardScoreResponse"
+                  },
+                  "title": "Response Get Leaderboard Api V1 Assessment Voice Leaderboard Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessment/voice/init": {
+      "post": {
+        "tags": [
+          "Voice Defense"
+        ],
+        "summary": "Start an interview session (returns the opening question and the session id to use)",
+        "operationId": "initialize_voice_session_api_v1_assessment_voice_init_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoiceSessionInitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceSessionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessment/voice/turn": {
+      "post": {
+        "tags": [
+          "Voice Defense"
+        ],
+        "summary": "Record a candidate answer and get the interviewer's follow-up (never a score or verdict)",
+        "operationId": "process_voice_turn_api_v1_assessment_voice_turn_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoiceTurnInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceTurnOutput"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessment/voice/{session_id}": {
+      "get": {
+        "tags": [
+          "Voice Defense"
+        ],
+        "summary": "One session with its transcript",
+        "operationId": "get_session_api_v1_assessment_voice__session_id__get",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceSessionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health Check",
+        "operationId": "health_check_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BenchmarkSuiteResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "repoId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Repoid"
+          },
+          "testCoveragePct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Testcoveragepct"
+          },
+          "cyclomaticComplexity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cyclomaticcomplexity"
+          },
+          "secVulnerabilitiesCount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secvulnerabilitiescount"
+          },
+          "executionTimeMs": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Executiontimems"
+          },
+          "suiteLogOutput": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suitelogoutput"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "repoId",
+          "createdAt"
+        ],
+        "title": "BenchmarkSuiteResponse",
+        "description": "Measured benchmark facts. Any value that was not measured is null."
       },
-      "title": "Channelsmonitored",
-      "type": "array"
-     },
-     "qualifiedLeadsCount": {
-      "title": "Qualifiedleadscount",
-      "type": "integer"
-     },
-     "seekingDiscardedCount": {
-      "title": "Seekingdiscardedcount",
-      "type": "integer"
-     },
-     "totalScanned24h": {
-      "title": "Totalscanned24H",
-      "type": "integer"
-     }
-    },
-    "required": [
-     "totalScanned24h",
-     "qualifiedLeadsCount",
-     "seekingDiscardedCount",
-     "awaitingAnalysisCount",
-     "channelsMonitored"
-    ],
-    "title": "IngestionTelemetryResponse",
-    "type": "object"
-   },
-   "JobLeadResponse": {
-    "properties": {
-     "clearanceRequired": {
-      "anyOf": [
-       {
-        "type": "boolean"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Clearancerequired"
-     },
-     "compCurrency": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Compcurrency"
-     },
-     "compMax": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Compmax"
-     },
-     "compMin": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Compmin"
-     },
-     "companyName": {
-      "title": "Companyname",
-      "type": "string"
-     },
-     "companyStage": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Companystage"
-     },
-     "contactAnchor": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Contactanchor"
-     },
-     "createdAt": {
-      "format": "date-time",
-      "title": "Createdat",
-      "type": "string"
-     },
-     "enrichmentMetadata": {
-      "additionalProperties": true,
-      "title": "Enrichmentmetadata",
-      "type": "object"
-     },
-     "equityNote": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Equitynote"
-     },
-     "id": {
-      "format": "uuid",
-      "title": "Id",
-      "type": "string"
-     },
-     "isDemo": {
-      "default": false,
-      "description": "True for clearly labelled development fixtures",
-      "title": "Isdemo",
-      "type": "boolean"
-     },
-     "isHiring": {
-      "title": "Ishiring",
-      "type": "boolean"
-     },
-     "locationMode": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Locationmode"
-     },
-     "matchScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "description": "Null: no matching model exists yet",
-      "title": "Matchscore"
-     },
-     "rawPost": {
-      "anyOf": [
-       {
-        "$ref": "#/components/schemas/RawPostResponse"
-       },
-       {
-        "type": "null"
-       }
-      ]
-     },
-     "rawPostId": {
-      "format": "uuid",
-      "title": "Rawpostid",
-      "type": "string"
-     },
-     "roleTitle": {
-      "title": "Roletitle",
-      "type": "string"
-     },
-     "techStack": {
-      "items": {
-       "type": "string"
+      "CandidateRepoDetailResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "candidateName": {
+            "type": "string",
+            "title": "Candidatename"
+          },
+          "candidateGithubHandle": {
+            "type": "string",
+            "title": "Candidategithubhandle"
+          },
+          "candidateAvatarUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidateavatarurl"
+          },
+          "repoUrl": {
+            "type": "string",
+            "title": "Repourl"
+          },
+          "repoName": {
+            "type": "string",
+            "title": "Reponame"
+          },
+          "targetRole": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targetrole"
+          },
+          "branch": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Branch"
+          },
+          "commitSha": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commitsha"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "awaiting_analysis | analyzing | analyzed | failed"
+          },
+          "isDemo": {
+            "type": "boolean",
+            "title": "Isdemo",
+            "description": "True for clearly labelled development fixtures",
+            "default": false
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Submittedat"
+          },
+          "sourceType": {
+            "type": "string",
+            "title": "Sourcetype",
+            "description": "api_manual | github_api | demo_fixture",
+            "default": "api_manual"
+          },
+          "verificationStatus": {
+            "type": "string",
+            "title": "Verificationstatus",
+            "description": "unverified | github_metadata (facts fetched from GitHub, not analysed) | demo_fixture",
+            "default": "unverified"
+          },
+          "githubMetadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Githubmetadata",
+            "description": "Exactly what GitHub returned"
+          },
+          "metadataFetchedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metadatafetchedat"
+          },
+          "benchmark": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BenchmarkSuiteResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evaluation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CodeEvaluationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "candidateName",
+          "candidateGithubHandle",
+          "repoUrl",
+          "repoName",
+          "status",
+          "submittedAt"
+        ],
+        "title": "CandidateRepoDetailResponse"
       },
-      "title": "Techstack",
-      "type": "array"
-     },
-     "urgencyTier": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Urgencytier"
-     }
-    },
-    "required": [
-     "id",
-     "rawPostId",
-     "roleTitle",
-     "companyName",
-     "techStack",
-     "isHiring",
-     "createdAt"
-    ],
-    "title": "JobLeadResponse",
-    "type": "object"
-   },
-   "LeadSearchHit": {
-    "properties": {
-     "lead": {
-      "$ref": "#/components/schemas/JobLeadResponse"
-     },
-     "matchType": {
-      "const": "keyword",
-      "default": "keyword",
-      "title": "Matchtype",
-      "type": "string"
-     },
-     "similarityScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "description": "Always null until embeddings exist",
-      "title": "Similarityscore"
-     }
-    },
-    "required": [
-     "lead"
-    ],
-    "title": "LeadSearchHit",
-    "type": "object"
-   },
-   "LeadSearchQuery": {
-    "properties": {
-     "queryText": {
-      "maxLength": 500,
-      "minLength": 1,
-      "title": "Querytext",
-      "type": "string"
-     },
-     "topK": {
-      "default": 10,
-      "maximum": 50.0,
-      "minimum": 1.0,
-      "title": "Topk",
-      "type": "integer"
-     }
-    },
-    "required": [
-     "queryText"
-    ],
-    "title": "LeadSearchQuery",
-    "type": "object"
-   },
-   "LeaderboardScoreResponse": {
-    "description": "One assessed candidate. Any score that was not measured is null; `statusTag` is a review state.",
-    "properties": {
-     "candidateAvatarUrl": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Candidateavatarurl"
-     },
-     "candidateHandle": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Candidatehandle"
-     },
-     "candidateName": {
-      "title": "Candidatename",
-      "type": "string"
-     },
-     "codeHealthScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Codehealthscore"
-     },
-     "compositePercentile": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Compositepercentile"
-     },
-     "id": {
-      "format": "uuid",
-      "title": "Id",
-      "type": "string"
-     },
-     "rankTier": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Ranktier"
-     },
-     "recordedAt": {
-      "format": "date-time",
-      "title": "Recordedat",
-      "type": "string"
-     },
-     "repoName": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Reponame"
-     },
-     "sessionId": {
-      "format": "uuid",
-      "title": "Sessionid",
-      "type": "string"
-     },
-     "statusTag": {
-      "title": "Statustag",
-      "type": "string"
-     },
-     "targetRole": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Targetrole"
-     },
-     "voiceDefenseScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Voicedefensescore"
-     }
-    },
-    "required": [
-     "id",
-     "sessionId",
-     "candidateName",
-     "statusTag",
-     "recordedAt"
-    ],
-    "title": "LeaderboardScoreResponse",
-    "type": "object"
-   },
-   "OutreachDraftRequest": {
-    "properties": {
-     "candidateProfileContext": {
-      "anyOf": [
-       {
-        "maxLength": 4000,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Candidateprofilecontext"
-     },
-     "leadId": {
-      "format": "uuid",
-      "title": "Leadid",
-      "type": "string"
-     },
-     "tone": {
-      "default": "Direct Technical",
-      "enum": [
-       "Direct Technical",
-       "Executive",
-       "Casual Founder"
-      ],
-      "title": "Tone",
-      "type": "string"
-     }
-    },
-    "required": [
-     "leadId"
-    ],
-    "title": "OutreachDraftRequest",
-    "type": "object"
-   },
-   "OutreachDraftResponse": {
-    "properties": {
-     "candidateProfileContext": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Candidateprofilecontext"
-     },
-     "completionTokens": {
-      "anyOf": [
-       {
-        "type": "integer"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Completiontokens"
-     },
-     "createdAt": {
-      "format": "date-time",
-      "title": "Createdat",
-      "type": "string"
-     },
-     "generatedPitch": {
-      "title": "Generatedpitch",
-      "type": "string"
-     },
-     "id": {
-      "format": "uuid",
-      "title": "Id",
-      "type": "string"
-     },
-     "leadId": {
-      "format": "uuid",
-      "title": "Leadid",
-      "type": "string"
-     },
-     "modelVersion": {
-      "title": "Modelversion",
-      "type": "string"
-     },
-     "pitchSubject": {
-      "title": "Pitchsubject",
-      "type": "string"
-     },
-     "promptTokens": {
-      "anyOf": [
-       {
-        "type": "integer"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Prompttokens"
-     },
-     "status": {
-      "title": "Status",
-      "type": "string"
-     },
-     "tone": {
-      "title": "Tone",
-      "type": "string"
-     }
-    },
-    "required": [
-     "id",
-     "leadId",
-     "tone",
-     "pitchSubject",
-     "generatedPitch",
-     "status",
-     "modelVersion",
-     "createdAt"
-    ],
-    "title": "OutreachDraftResponse",
-    "type": "object"
-   },
-   "ParsedLeadExtraction": {
-    "description": "Structured output of the AI parsing step. Fields the post does not state stay null.",
-    "properties": {
-     "clearanceRequired": {
-      "anyOf": [
-       {
-        "type": "boolean"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Clearancerequired"
-     },
-     "compCurrency": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Compcurrency"
-     },
-     "compMax": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Compmax"
-     },
-     "compMin": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Compmin"
-     },
-     "companyName": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Companyname"
-     },
-     "companyStage": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Companystage"
-     },
-     "contactAnchor": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Contactanchor"
-     },
-     "equityNote": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Equitynote"
-     },
-     "extractedSummary": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Extractedsummary"
-     },
-     "isHiring": {
-      "description": "True if the author is offering a job, False if a job seeker",
-      "title": "Ishiring",
-      "type": "boolean"
-     },
-     "locationMode": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Locationmode"
-     },
-     "roleTitle": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Roletitle"
-     },
-     "techStack": {
-      "items": {
-       "type": "string"
+      "CodeEvaluationResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "repoId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Repoid"
+          },
+          "compositeHealthScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compositehealthscore"
+          },
+          "architectureScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Architecturescore"
+          },
+          "concurrencySafetyScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Concurrencysafetyscore"
+          },
+          "maintainabilityScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maintainabilityscore"
+          },
+          "summaryVerdict": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summaryverdict"
+          },
+          "rubricBreakdown": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Rubricbreakdown"
+          },
+          "flaggedAnomalies": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Flaggedanomalies"
+          },
+          "recommendedDefenseTopics": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Recommendeddefensetopics"
+          },
+          "evaluatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Evaluatedat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "repoId",
+          "evaluatedAt"
+        ],
+        "title": "CodeEvaluationResponse",
+        "description": "A written/scored evaluation. Scores are optional model/analyst opinions, never verdicts."
       },
-      "title": "Techstack",
-      "type": "array"
-     },
-     "urgencyTier": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Urgencytier"
-     }
-    },
-    "required": [
-     "isHiring"
-    ],
-    "title": "ParsedLeadExtraction",
-    "type": "object"
-   },
-   "RawPostCreate": {
-    "properties": {
-     "authorAvatarUrl": {
-      "anyOf": [
-       {
-        "maxLength": 512,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Authoravatarurl"
-     },
-     "authorHandle": {
-      "anyOf": [
-       {
-        "maxLength": 120,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Authorhandle"
-     },
-     "authorName": {
-      "anyOf": [
-       {
-        "maxLength": 255,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Authorname"
-     },
-     "externalId": {
-      "anyOf": [
-       {
-        "maxLength": 255,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "description": "Source post id; generated when omitted",
-      "title": "Externalid"
-     },
-     "platform": {
-      "enum": [
-       "twitter",
-       "linkedin",
-       "reddit",
-       "telegram"
-      ],
-      "title": "Platform",
-      "type": "string"
-     },
-     "rawContent": {
-      "maxLength": 20000,
-      "minLength": 1,
-      "title": "Rawcontent",
-      "type": "string"
-     },
-     "sourceChannel": {
-      "default": "Manual import",
-      "maxLength": 120,
-      "title": "Sourcechannel",
-      "type": "string"
-     }
-    },
-    "required": [
-     "platform",
-     "rawContent"
-    ],
-    "title": "RawPostCreate",
-    "type": "object"
-   },
-   "RawPostResponse": {
-    "properties": {
-     "authorAvatarUrl": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Authoravatarurl"
-     },
-     "authorHandle": {
-      "title": "Authorhandle",
-      "type": "string"
-     },
-     "authorName": {
-      "title": "Authorname",
-      "type": "string"
-     },
-     "externalId": {
-      "title": "Externalid",
-      "type": "string"
-     },
-     "id": {
-      "format": "uuid",
-      "title": "Id",
-      "type": "string"
-     },
-     "ingestedAt": {
-      "format": "date-time",
-      "title": "Ingestedat",
-      "type": "string"
-     },
-     "isProcessed": {
-      "title": "Isprocessed",
-      "type": "boolean"
-     },
-     "platform": {
-      "title": "Platform",
-      "type": "string"
-     },
-     "rawContent": {
-      "title": "Rawcontent",
-      "type": "string"
-     },
-     "sourceChannel": {
-      "title": "Sourcechannel",
-      "type": "string"
-     }
-    },
-    "required": [
-     "id",
-     "platform",
-     "externalId",
-     "authorHandle",
-     "authorName",
-     "rawContent",
-     "sourceChannel",
-     "ingestedAt",
-     "isProcessed"
-    ],
-    "title": "RawPostResponse",
-    "type": "object"
-   },
-   "RepoSubmissionRequest": {
-    "properties": {
-     "branch": {
-      "anyOf": [
-       {
-        "maxLength": 100,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "description": "Null = repository default branch",
-      "title": "Branch"
-     },
-     "candidateAvatarUrl": {
-      "anyOf": [
-       {
-        "maxLength": 512,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Candidateavatarurl"
-     },
-     "candidateGithubHandle": {
-      "maxLength": 120,
-      "minLength": 1,
-      "title": "Candidategithubhandle",
-      "type": "string"
-     },
-     "candidateName": {
-      "maxLength": 255,
-      "minLength": 1,
-      "title": "Candidatename",
-      "type": "string"
-     },
-     "repoUrl": {
-      "description": "https://github.com/<owner>/<repo>",
-      "maxLength": 512,
-      "title": "Repourl",
-      "type": "string"
-     },
-     "targetRole": {
-      "anyOf": [
-       {
-        "maxLength": 150,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Targetrole"
-     }
-    },
-    "required": [
-     "candidateName",
-     "candidateGithubHandle",
-     "repoUrl"
-    ],
-    "title": "RepoSubmissionRequest",
-    "type": "object"
-   },
-   "TranscriptTurn": {
-    "properties": {
-     "audioUrl": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Audiourl"
-     },
-     "speaker": {
-      "enum": [
-       "ai_interviewer",
-       "candidate"
-      ],
-      "title": "Speaker",
-      "type": "string"
-     },
-     "technicalAssessmentNote": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Technicalassessmentnote"
-     },
-     "text": {
-      "title": "Text",
-      "type": "string"
-     },
-     "timestamp": {
-      "title": "Timestamp",
-      "type": "string"
-     }
-    },
-    "required": [
-     "speaker",
-     "text",
-     "timestamp"
-    ],
-    "title": "TranscriptTurn",
-    "type": "object"
-   },
-   "VoiceSessionInitRequest": {
-    "properties": {
-     "candidateName": {
-      "anyOf": [
-       {
-        "maxLength": 255,
-        "minLength": 1,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Candidatename"
-     },
-     "focusTopic": {
-      "anyOf": [
-       {
-        "maxLength": 300,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Focustopic"
-     },
-     "repoId": {
-      "anyOf": [
-       {
-        "format": "uuid",
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Repoid"
-     }
-    },
-    "title": "VoiceSessionInitRequest",
-    "type": "object"
-   },
-   "VoiceSessionResponse": {
-    "properties": {
-     "architectureDefenseScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Architecturedefensescore"
-     },
-     "candidateName": {
-      "title": "Candidatename",
-      "type": "string"
-     },
-     "clarityArticulationScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Clarityarticulationscore"
-     },
-     "completedAt": {
-      "anyOf": [
-       {
-        "format": "date-time",
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Completedat"
-     },
-     "defenseVerdict": {
-      "title": "Defenseverdict",
-      "type": "string"
-     },
-     "durationSeconds": {
-      "title": "Durationseconds",
-      "type": "integer"
-     },
-     "finalCompositeScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Finalcompositescore"
-     },
-     "id": {
-      "format": "uuid",
-      "title": "Id",
-      "type": "string"
-     },
-     "keyTakeaways": {
-      "items": {
-       "type": "string"
+      "ErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "errors": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/FieldError"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Errors"
+          }
+        },
+        "type": "object",
+        "required": [
+          "detail",
+          "code"
+        ],
+        "title": "ErrorResponse",
+        "description": "Every non-2xx response has this shape."
       },
-      "title": "Keytakeaways",
-      "type": "array"
-     },
-     "repoId": {
-      "anyOf": [
-       {
-        "format": "uuid",
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Repoid"
-     },
-     "sessionStatus": {
-      "title": "Sessionstatus",
-      "type": "string"
-     },
-     "startedAt": {
-      "format": "date-time",
-      "title": "Startedat",
-      "type": "string"
-     },
-     "technicalDepthScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Technicaldepthscore"
-     },
-     "transcriptTurns": {
-      "items": {
-       "$ref": "#/components/schemas/TranscriptTurn"
+      "FieldError": {
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "field",
+          "message"
+        ],
+        "title": "FieldError"
       },
-      "title": "Transcriptturns",
-      "type": "array"
-     }
-    },
-    "required": [
-     "id",
-     "candidateName",
-     "sessionStatus",
-     "startedAt",
-     "durationSeconds",
-     "defenseVerdict",
-     "transcriptTurns",
-     "keyTakeaways"
-    ],
-    "title": "VoiceSessionResponse",
-    "type": "object"
-   },
-   "VoiceTurnInput": {
-    "properties": {
-     "candidateSpeechText": {
-      "maxLength": 8000,
-      "minLength": 1,
-      "title": "Candidatespeechtext",
-      "type": "string"
-     },
-     "sessionId": {
-      "format": "uuid",
-      "title": "Sessionid",
-      "type": "string"
-     }
-    },
-    "required": [
-     "sessionId",
-     "candidateSpeechText"
-    ],
-    "title": "VoiceTurnInput",
-    "type": "object"
-   },
-   "VoiceTurnOutput": {
-    "properties": {
-     "aiStatus": {
-      "description": "'unavailable' means no interviewer reply could be generated; the answer was still recorded",
-      "enum": [
-       "generated",
-       "unavailable"
-      ],
-      "title": "Aistatus",
-      "type": "string"
-     },
-     "currentCompositeScore": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "description": "Null: answers are not auto-scored",
-      "title": "Currentcompositescore"
-     },
-     "currentVerdict": {
-      "description": "Always a review state such as needs_human_review; never a hiring decision",
-      "title": "Currentverdict",
-      "type": "string"
-     },
-     "defenseScoreDelta": {
-      "anyOf": [
-       {
-        "type": "number"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "description": "Null: answers are not auto-scored",
-      "title": "Defensescoredelta"
-     },
-     "interviewerReplyText": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Interviewerreplytext"
-     },
-     "sessionId": {
-      "format": "uuid",
-      "title": "Sessionid",
-      "type": "string"
-     },
-     "turnNumber": {
-      "title": "Turnnumber",
-      "type": "integer"
-     }
-    },
-    "required": [
-     "sessionId",
-     "turnNumber",
-     "aiStatus",
-     "currentVerdict"
-    ],
-    "title": "VoiceTurnOutput",
-    "type": "object"
-   }
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "degraded"
+            ],
+            "title": "Status"
+          },
+          "service": {
+            "type": "string",
+            "title": "Service"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "database": {
+            "type": "string",
+            "enum": [
+              "connected",
+              "unreachable"
+            ],
+            "title": "Database"
+          },
+          "gemini": {
+            "type": "string",
+            "enum": [
+              "configured",
+              "not_configured"
+            ],
+            "title": "Gemini"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "service",
+          "version",
+          "database",
+          "gemini"
+        ],
+        "title": "HealthResponse"
+      },
+      "IngestOutcome": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "created",
+              "discarded",
+              "awaiting_analysis",
+              "needs_review"
+            ],
+            "title": "Status"
+          },
+          "rawPostId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Rawpostid"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "lead": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobLeadResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "rawPostId"
+        ],
+        "title": "IngestOutcome",
+        "description": "Result of submitting a post. The raw post is always stored; `status` says what happened next."
+      },
+      "IngestionTelemetryResponse": {
+        "properties": {
+          "totalScanned24h": {
+            "type": "integer",
+            "title": "Totalscanned24H"
+          },
+          "qualifiedLeadsCount": {
+            "type": "integer",
+            "title": "Qualifiedleadscount"
+          },
+          "seekingDiscardedCount": {
+            "type": "integer",
+            "title": "Seekingdiscardedcount"
+          },
+          "awaitingAnalysisCount": {
+            "type": "integer",
+            "title": "Awaitinganalysiscount"
+          },
+          "demoPostsCount": {
+            "type": "integer",
+            "title": "Demopostscount",
+            "description": "Labelled demo fixtures; excluded from the counts above",
+            "default": 0
+          },
+          "demoScanned24h": {
+            "type": "integer",
+            "title": "Demoscanned24H",
+            "default": 0
+          },
+          "demoQualifiedLeadsCount": {
+            "type": "integer",
+            "title": "Demoqualifiedleadscount",
+            "default": 0
+          },
+          "demoSeekingDiscardedCount": {
+            "type": "integer",
+            "title": "Demoseekingdiscardedcount",
+            "default": 0
+          },
+          "demoAwaitingAnalysisCount": {
+            "type": "integer",
+            "title": "Demoawaitinganalysiscount",
+            "default": 0
+          },
+          "channelsMonitored": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Channelsmonitored"
+          },
+          "avgLatencyMs": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avglatencyms",
+            "description": "Null: latency is not measured"
+          }
+        },
+        "type": "object",
+        "required": [
+          "totalScanned24h",
+          "qualifiedLeadsCount",
+          "seekingDiscardedCount",
+          "awaitingAnalysisCount",
+          "channelsMonitored"
+        ],
+        "title": "IngestionTelemetryResponse"
+      },
+      "JobLeadResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "rawPostId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Rawpostid"
+          },
+          "roleTitle": {
+            "type": "string",
+            "title": "Roletitle"
+          },
+          "companyName": {
+            "type": "string",
+            "title": "Companyname"
+          },
+          "companyStage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Companystage"
+          },
+          "compMin": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compmin"
+          },
+          "compMax": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compmax"
+          },
+          "compCurrency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compcurrency"
+          },
+          "equityNote": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equitynote"
+          },
+          "techStack": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Techstack"
+          },
+          "locationMode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locationmode"
+          },
+          "clearanceRequired": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clearancerequired"
+          },
+          "isHiring": {
+            "type": "boolean",
+            "title": "Ishiring"
+          },
+          "matchScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Matchscore",
+            "description": "Null: no matching model exists yet"
+          },
+          "urgencyTier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Urgencytier"
+          },
+          "contactAnchor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contactanchor"
+          },
+          "enrichmentMetadata": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Enrichmentmetadata"
+          },
+          "entrySource": {
+            "type": "string",
+            "title": "Entrysource",
+            "description": "ai_extracted | operator_entered | demo_fixture",
+            "default": "ai_extracted"
+          },
+          "isDemo": {
+            "type": "boolean",
+            "title": "Isdemo",
+            "description": "True for clearly labelled development fixtures",
+            "default": false
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "rawPost": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RawPostResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "rawPostId",
+          "roleTitle",
+          "companyName",
+          "techStack",
+          "isHiring",
+          "createdAt"
+        ],
+        "title": "JobLeadResponse"
+      },
+      "LeadSearchHit": {
+        "properties": {
+          "lead": {
+            "$ref": "#/components/schemas/JobLeadResponse"
+          },
+          "matchType": {
+            "type": "string",
+            "const": "keyword",
+            "title": "Matchtype",
+            "default": "keyword"
+          },
+          "similarityScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Similarityscore",
+            "description": "Always null until embeddings exist"
+          }
+        },
+        "type": "object",
+        "required": [
+          "lead"
+        ],
+        "title": "LeadSearchHit"
+      },
+      "LeadSearchQuery": {
+        "properties": {
+          "queryText": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Querytext"
+          },
+          "topK": {
+            "type": "integer",
+            "maximum": 50.0,
+            "minimum": 1.0,
+            "title": "Topk",
+            "default": 10
+          }
+        },
+        "type": "object",
+        "required": [
+          "queryText"
+        ],
+        "title": "LeadSearchQuery"
+      },
+      "LeaderboardScoreResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Sessionid"
+          },
+          "candidateName": {
+            "type": "string",
+            "title": "Candidatename"
+          },
+          "candidateAvatarUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidateavatarurl"
+          },
+          "candidateHandle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidatehandle"
+          },
+          "targetRole": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targetrole"
+          },
+          "repoName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reponame"
+          },
+          "codeHealthScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Codehealthscore"
+          },
+          "voiceDefenseScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Voicedefensescore"
+          },
+          "compositePercentile": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compositepercentile"
+          },
+          "rankTier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ranktier"
+          },
+          "statusTag": {
+            "type": "string",
+            "title": "Statustag"
+          },
+          "isDemo": {
+            "type": "boolean",
+            "title": "Isdemo",
+            "default": false
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Recordedat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "sessionId",
+          "candidateName",
+          "statusTag",
+          "recordedAt"
+        ],
+        "title": "LeaderboardScoreResponse",
+        "description": "One assessed candidate. Any score that was not measured is null; `statusTag` is a review state."
+      },
+      "OutreachDraftRequest": {
+        "properties": {
+          "leadId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Leadid"
+          },
+          "tone": {
+            "type": "string",
+            "enum": [
+              "Direct Technical",
+              "Executive",
+              "Casual Founder"
+            ],
+            "title": "Tone",
+            "default": "Direct Technical"
+          },
+          "candidateProfileContext": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidateprofilecontext"
+          }
+        },
+        "type": "object",
+        "required": [
+          "leadId"
+        ],
+        "title": "OutreachDraftRequest"
+      },
+      "OutreachDraftResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "leadId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Leadid"
+          },
+          "tone": {
+            "type": "string",
+            "title": "Tone"
+          },
+          "pitchSubject": {
+            "type": "string",
+            "title": "Pitchsubject"
+          },
+          "generatedPitch": {
+            "type": "string",
+            "title": "Generatedpitch"
+          },
+          "candidateProfileContext": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidateprofilecontext"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "modelVersion": {
+            "type": "string",
+            "title": "Modelversion"
+          },
+          "promptTokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompttokens"
+          },
+          "completionTokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completiontokens"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "leadId",
+          "tone",
+          "pitchSubject",
+          "generatedPitch",
+          "status",
+          "modelVersion",
+          "createdAt"
+        ],
+        "title": "OutreachDraftResponse"
+      },
+      "ParsedLeadExtraction": {
+        "properties": {
+          "isHiring": {
+            "type": "boolean",
+            "title": "Ishiring",
+            "description": "True if the author is offering a job, False if a job seeker"
+          },
+          "roleTitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Roletitle"
+          },
+          "companyName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Companyname"
+          },
+          "companyStage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Companystage"
+          },
+          "compMin": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compmin"
+          },
+          "compMax": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compmax"
+          },
+          "compCurrency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compcurrency"
+          },
+          "equityNote": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equitynote"
+          },
+          "techStack": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Techstack"
+          },
+          "locationMode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locationmode"
+          },
+          "clearanceRequired": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clearancerequired"
+          },
+          "urgencyTier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Urgencytier"
+          },
+          "contactAnchor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contactanchor"
+          },
+          "extractedSummary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extractedsummary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "isHiring"
+        ],
+        "title": "ParsedLeadExtraction",
+        "description": "Structured output of the AI parsing step. Fields the post does not state stay null."
+      },
+      "RawPostCreate": {
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "twitter",
+              "linkedin",
+              "reddit",
+              "telegram"
+            ],
+            "title": "Platform"
+          },
+          "externalId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Externalid",
+            "description": "Source post id; generated when omitted"
+          },
+          "authorHandle": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Authorhandle"
+          },
+          "authorName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Authorname"
+          },
+          "authorAvatarUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 512
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Authoravatarurl"
+          },
+          "rawContent": {
+            "type": "string",
+            "maxLength": 20000,
+            "minLength": 1,
+            "title": "Rawcontent"
+          },
+          "sourceChannel": {
+            "type": "string",
+            "maxLength": 120,
+            "title": "Sourcechannel",
+            "default": "Manual import"
+          }
+        },
+        "type": "object",
+        "required": [
+          "platform",
+          "rawContent"
+        ],
+        "title": "RawPostCreate"
+      },
+      "RawPostResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "platform": {
+            "type": "string",
+            "title": "Platform"
+          },
+          "externalId": {
+            "type": "string",
+            "title": "Externalid"
+          },
+          "authorHandle": {
+            "type": "string",
+            "title": "Authorhandle"
+          },
+          "authorName": {
+            "type": "string",
+            "title": "Authorname"
+          },
+          "authorAvatarUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Authoravatarurl"
+          },
+          "rawContent": {
+            "type": "string",
+            "title": "Rawcontent"
+          },
+          "sourceChannel": {
+            "type": "string",
+            "title": "Sourcechannel"
+          },
+          "ingestedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ingestedat"
+          },
+          "isProcessed": {
+            "type": "boolean",
+            "title": "Isprocessed"
+          },
+          "sourceType": {
+            "type": "string",
+            "title": "Sourcetype",
+            "description": "api_manual | manual_text | demo_fixture"
+          },
+          "verificationStatus": {
+            "type": "string",
+            "title": "Verificationstatus",
+            "description": "unverified | demo_fixture. Never 'verified' for user-provided text"
+          },
+          "sourceUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sourceurl"
+          },
+          "postedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Postedat"
+          },
+          "isDemo": {
+            "type": "boolean",
+            "title": "Isdemo",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "platform",
+          "externalId",
+          "authorHandle",
+          "authorName",
+          "rawContent",
+          "sourceChannel",
+          "ingestedAt",
+          "isProcessed",
+          "sourceType",
+          "verificationStatus"
+        ],
+        "title": "RawPostResponse"
+      },
+      "RepoSubmissionRequest": {
+        "properties": {
+          "candidateName": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Candidatename"
+          },
+          "candidateGithubHandle": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Candidategithubhandle"
+          },
+          "candidateAvatarUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 512
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidateavatarurl"
+          },
+          "repoUrl": {
+            "type": "string",
+            "maxLength": 512,
+            "title": "Repourl",
+            "description": "https://github.com/<owner>/<repo>"
+          },
+          "targetRole": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targetrole"
+          },
+          "branch": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Branch",
+            "description": "Null = repository default branch"
+          }
+        },
+        "type": "object",
+        "required": [
+          "candidateName",
+          "candidateGithubHandle",
+          "repoUrl"
+        ],
+        "title": "RepoSubmissionRequest"
+      },
+      "TranscriptTurn": {
+        "properties": {
+          "speaker": {
+            "type": "string",
+            "enum": [
+              "ai_interviewer",
+              "candidate"
+            ],
+            "title": "Speaker"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "audioUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audiourl"
+          },
+          "technicalAssessmentNote": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technicalassessmentnote"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speaker",
+          "text",
+          "timestamp"
+        ],
+        "title": "TranscriptTurn"
+      },
+      "VoiceSessionInitRequest": {
+        "properties": {
+          "repoId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Repoid"
+          },
+          "candidateName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidatename"
+          },
+          "focusTopic": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Focustopic"
+          }
+        },
+        "type": "object",
+        "title": "VoiceSessionInitRequest"
+      },
+      "VoiceSessionResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "repoId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Repoid"
+          },
+          "candidateName": {
+            "type": "string",
+            "title": "Candidatename"
+          },
+          "sessionStatus": {
+            "type": "string",
+            "title": "Sessionstatus"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Startedat"
+          },
+          "completedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completedat"
+          },
+          "durationSeconds": {
+            "type": "integer",
+            "title": "Durationseconds"
+          },
+          "technicalDepthScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technicaldepthscore"
+          },
+          "clarityArticulationScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clarityarticulationscore"
+          },
+          "architectureDefenseScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Architecturedefensescore"
+          },
+          "finalCompositeScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finalcompositescore"
+          },
+          "defenseVerdict": {
+            "type": "string",
+            "title": "Defenseverdict"
+          },
+          "transcriptTurns": {
+            "items": {
+              "$ref": "#/components/schemas/TranscriptTurn"
+            },
+            "type": "array",
+            "title": "Transcriptturns"
+          },
+          "keyTakeaways": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Keytakeaways"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "candidateName",
+          "sessionStatus",
+          "startedAt",
+          "durationSeconds",
+          "defenseVerdict",
+          "transcriptTurns",
+          "keyTakeaways"
+        ],
+        "title": "VoiceSessionResponse"
+      },
+      "VoiceTurnInput": {
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Sessionid"
+          },
+          "candidateSpeechText": {
+            "type": "string",
+            "maxLength": 8000,
+            "minLength": 1,
+            "title": "Candidatespeechtext"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sessionId",
+          "candidateSpeechText"
+        ],
+        "title": "VoiceTurnInput"
+      },
+      "VoiceTurnOutput": {
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Sessionid"
+          },
+          "turnNumber": {
+            "type": "integer",
+            "title": "Turnnumber"
+          },
+          "aiStatus": {
+            "type": "string",
+            "enum": [
+              "generated",
+              "unavailable"
+            ],
+            "title": "Aistatus",
+            "description": "'unavailable' means no interviewer reply could be generated; the answer was still recorded"
+          },
+          "interviewerReplyText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Interviewerreplytext"
+          },
+          "defenseScoreDelta": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Defensescoredelta",
+            "description": "Null: answers are not auto-scored"
+          },
+          "currentCompositeScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currentcompositescore",
+            "description": "Null: answers are not auto-scored"
+          },
+          "currentVerdict": {
+            "type": "string",
+            "title": "Currentverdict",
+            "description": "Always a review state such as needs_human_review; never a hiring decision"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sessionId",
+          "turnNumber",
+          "aiStatus",
+          "currentVerdict"
+        ],
+        "title": "VoiceTurnOutput"
+      }
+    }
   }
- },
- "info": {
-  "title": "Synapse.AI",
-  "version": "3.0.0"
- },
- "openapi": "3.1.0",
- "paths": {
-  "/api/health": {
-   "get": {
-    "operationId": "health_check_api_health_get",
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/HealthResponse"
-        }
-       }
-      },
-      "description": "Successful Response"
-     }
-    },
-    "summary": "Health Check",
-    "tags": [
-     "Health"
-    ]
-   }
-  },
-  "/api/v1/assessment/repo/recent": {
-   "get": {
-    "operationId": "get_recent_repos_api_v1_assessment_repo_recent_get",
-    "parameters": [
-     {
-      "in": "query",
-      "name": "limit",
-      "required": false,
-      "schema": {
-       "default": 20,
-       "maximum": 50,
-       "minimum": 1,
-       "title": "Limit",
-       "type": "integer"
-      }
-     }
-    ],
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "items": {
-          "$ref": "#/components/schemas/CandidateRepoDetailResponse"
-         },
-         "title": "Response Get Recent Repos Api V1 Assessment Repo Recent Get",
-         "type": "array"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Submitted repositories with their measured results, if any (newest first)",
-    "tags": [
-     "Code Verifier"
-    ]
-   }
-  },
-  "/api/v1/assessment/repo/submit": {
-   "post": {
-    "operationId": "submit_repo_api_v1_assessment_repo_submit_post",
-    "requestBody": {
-     "content": {
-      "application/json": {
-       "schema": {
-        "$ref": "#/components/schemas/RepoSubmissionRequest"
-       }
-      }
-     },
-     "required": true
-    },
-    "responses": {
-     "201": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/CandidateRepoDetailResponse"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Register a repository for analysis (stored as awaiting_analysis; nothing is scored)",
-    "tags": [
-     "Code Verifier"
-    ]
-   }
-  },
-  "/api/v1/assessment/repo/{repo_id}": {
-   "get": {
-    "operationId": "get_repo_detail_api_v1_assessment_repo__repo_id__get",
-    "parameters": [
-     {
-      "in": "path",
-      "name": "repo_id",
-      "required": true,
-      "schema": {
-       "format": "uuid",
-       "title": "Repo Id",
-       "type": "string"
-      }
-     }
-    ],
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/CandidateRepoDetailResponse"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "One repository and its results",
-    "tags": [
-     "Code Verifier"
-    ]
-   }
-  },
-  "/api/v1/assessment/voice/init": {
-   "post": {
-    "operationId": "initialize_voice_session_api_v1_assessment_voice_init_post",
-    "requestBody": {
-     "content": {
-      "application/json": {
-       "schema": {
-        "$ref": "#/components/schemas/VoiceSessionInitRequest"
-       }
-      }
-     },
-     "required": true
-    },
-    "responses": {
-     "201": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/VoiceSessionResponse"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Start an interview session (returns the opening question and the session id to use)",
-    "tags": [
-     "Voice Defense"
-    ]
-   }
-  },
-  "/api/v1/assessment/voice/leaderboard": {
-   "get": {
-    "operationId": "get_leaderboard_api_v1_assessment_voice_leaderboard_get",
-    "parameters": [
-     {
-      "in": "query",
-      "name": "limit",
-      "required": false,
-      "schema": {
-       "default": 20,
-       "maximum": 100,
-       "minimum": 1,
-       "title": "Limit",
-       "type": "integer"
-      }
-     }
-    ],
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "items": {
-          "$ref": "#/components/schemas/LeaderboardScoreResponse"
-         },
-         "title": "Response Get Leaderboard Api V1 Assessment Voice Leaderboard Get",
-         "type": "array"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Assessed candidates (newest first); unmeasured scores are null",
-    "tags": [
-     "Leaderboard"
-    ]
-   }
-  },
-  "/api/v1/assessment/voice/turn": {
-   "post": {
-    "operationId": "process_voice_turn_api_v1_assessment_voice_turn_post",
-    "requestBody": {
-     "content": {
-      "application/json": {
-       "schema": {
-        "$ref": "#/components/schemas/VoiceTurnInput"
-       }
-      }
-     },
-     "required": true
-    },
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/VoiceTurnOutput"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Record a candidate answer and get the interviewer's follow-up (never a score or verdict)",
-    "tags": [
-     "Voice Defense"
-    ]
-   }
-  },
-  "/api/v1/assessment/voice/{session_id}": {
-   "get": {
-    "operationId": "get_session_api_v1_assessment_voice__session_id__get",
-    "parameters": [
-     {
-      "in": "path",
-      "name": "session_id",
-      "required": true,
-      "schema": {
-       "format": "uuid",
-       "title": "Session Id",
-       "type": "string"
-      }
-     }
-    ],
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/VoiceSessionResponse"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "One session with its transcript",
-    "tags": [
-     "Voice Defense"
-    ]
-   }
-  },
-  "/api/v1/leads/ingest/parse-text": {
-   "post": {
-    "operationId": "parse_raw_text_api_v1_leads_ingest_parse_text_post",
-    "parameters": [
-     {
-      "in": "query",
-      "name": "text_content",
-      "required": true,
-      "schema": {
-       "maxLength": 20000,
-       "minLength": 1,
-       "title": "Text Content",
-       "type": "string"
-      }
-     },
-     {
-      "in": "query",
-      "name": "platform",
-      "required": false,
-      "schema": {
-       "default": "twitter",
-       "enum": [
-        "twitter",
-        "linkedin",
-        "reddit",
-        "telegram"
-       ],
-       "title": "Platform",
-       "type": "string"
-      }
-     }
-    ],
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ParsedLeadExtraction"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Run the AI extraction on arbitrary text without storing anything",
-    "tags": [
-     "Job Lead Radar"
-    ]
-   }
-  },
-  "/api/v1/leads/ingest/recent": {
-   "get": {
-    "operationId": "get_recent_leads_api_v1_leads_ingest_recent_get",
-    "parameters": [
-     {
-      "in": "query",
-      "name": "limit",
-      "required": false,
-      "schema": {
-       "default": 25,
-       "maximum": 100,
-       "minimum": 1,
-       "title": "Limit",
-       "type": "integer"
-      }
-     },
-     {
-      "in": "query",
-      "name": "platform",
-      "required": false,
-      "schema": {
-       "anyOf": [
-        {
-         "enum": [
-          "twitter",
-          "linkedin",
-          "reddit",
-          "telegram"
-         ],
-         "type": "string"
-        },
-        {
-         "type": "null"
-        }
-       ],
-       "title": "Platform"
-      }
-     },
-     {
-      "in": "query",
-      "name": "min_score",
-      "required": false,
-      "schema": {
-       "anyOf": [
-        {
-         "maximum": 100.0,
-         "minimum": 0.0,
-         "type": "number"
-        },
-        {
-         "type": "null"
-        }
-       ],
-       "title": "Min Score"
-      }
-     }
-    ],
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "items": {
-          "$ref": "#/components/schemas/JobLeadResponse"
-         },
-         "title": "Response Get Recent Leads Api V1 Leads Ingest Recent Get",
-         "type": "array"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Recent analysed leads (newest first)",
-    "tags": [
-     "Job Lead Radar"
-    ]
-   }
-  },
-  "/api/v1/leads/ingest/telemetry": {
-   "get": {
-    "operationId": "get_telemetry_api_v1_leads_ingest_telemetry_get",
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/IngestionTelemetryResponse"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Ingestion counts over the last 24 hours, computed from stored posts",
-    "tags": [
-     "Job Lead Radar"
-    ]
-   }
-  },
-  "/api/v1/leads/ingest/trigger": {
-   "post": {
-    "operationId": "trigger_ingestion_api_v1_leads_ingest_trigger_post",
-    "requestBody": {
-     "content": {
-      "application/json": {
-       "schema": {
-        "$ref": "#/components/schemas/RawPostCreate"
-       }
-      }
-     },
-     "required": true
-    },
-    "responses": {
-     "201": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/IngestOutcome"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Submit a social post; it is stored, then analysed (see `status`)",
-    "tags": [
-     "Job Lead Radar"
-    ]
-   }
-  },
-  "/api/v1/leads/outreach/generate": {
-   "post": {
-    "operationId": "generate_outreach_api_v1_leads_outreach_generate_post",
-    "requestBody": {
-     "content": {
-      "application/json": {
-       "schema": {
-        "$ref": "#/components/schemas/OutreachDraftRequest"
-       }
-      }
-     },
-     "required": true
-    },
-    "responses": {
-     "201": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/OutreachDraftResponse"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Draft an outreach message with the AI provider (503 when unavailable)",
-    "tags": [
-     "Job Lead Radar"
-    ]
-   }
-  },
-  "/api/v1/leads/outreach/history": {
-   "get": {
-    "operationId": "get_outreach_history_api_v1_leads_outreach_history_get",
-    "parameters": [
-     {
-      "in": "query",
-      "name": "limit",
-      "required": false,
-      "schema": {
-       "default": 20,
-       "maximum": 100,
-       "minimum": 1,
-       "title": "Limit",
-       "type": "integer"
-      }
-     }
-    ],
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "items": {
-          "$ref": "#/components/schemas/OutreachDraftResponse"
-         },
-         "title": "Response Get Outreach History Api V1 Leads Outreach History Get",
-         "type": "array"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Previously generated drafts (newest first)",
-    "tags": [
-     "Job Lead Radar"
-    ]
-   }
-  },
-  "/api/v1/leads/search": {
-   "post": {
-    "operationId": "search_leads_api_v1_leads_search_post",
-    "requestBody": {
-     "content": {
-      "application/json": {
-       "schema": {
-        "$ref": "#/components/schemas/LeadSearchQuery"
-       }
-      }
-     },
-     "required": true
-    },
-    "responses": {
-     "200": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "items": {
-          "$ref": "#/components/schemas/LeadSearchHit"
-         },
-         "title": "Response Search Leads Api V1 Leads Search Post",
-         "type": "array"
-        }
-       }
-      },
-      "description": "Successful Response"
-     },
-     "404": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Not found"
-     },
-     "409": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Conflict"
-     },
-     "422": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Validation failed"
-     },
-     "500": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "Unexpected server error"
-     },
-     "503": {
-      "content": {
-       "application/json": {
-        "schema": {
-         "$ref": "#/components/schemas/ErrorResponse"
-        }
-       }
-      },
-      "description": "A dependency (AI provider or database) is unavailable"
-     }
-    },
-    "summary": "Keyword search over leads (semantic search is not available yet)",
-    "tags": [
-     "Job Lead Radar"
-    ]
-   }
-  }
- }
 }

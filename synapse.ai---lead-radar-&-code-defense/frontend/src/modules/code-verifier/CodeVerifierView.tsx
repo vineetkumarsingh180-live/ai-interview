@@ -2,6 +2,7 @@ import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import { RepoSubmitCard } from './components/RepoSubmitCard';
 import { CodeHealthGauge } from './components/CodeHealthGauge';
+import { RepoFacts } from './components/RepoFacts';
 import type { RepoEvaluationState } from './hooks/useRepoEvaluation';
 
 interface CodeVerifierViewProps {
@@ -30,16 +31,17 @@ export const CodeVerifierView: React.FC<CodeVerifierViewProps> = ({ state, onCon
         <div className="card flex flex-wrap items-center justify-between gap-3 p-4 sm:p-5">
           <div className="min-w-0">
             <span className="eyebrow block">Next step</span>
-            <span className="text-sm font-bold text-ink">Continue to voice interview</span>
+            <span className="text-sm font-bold text-ink">Continue to Voice Defense</span>
           </div>
           <button type="button" onClick={onContinue} className="btn btn-primary">
-            <span>Open voice defense</span>
+            <span>Open Voice Defense</span>
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
       </div>
 
-      <div className="min-w-0 xl:col-span-7">
+      <div className="min-w-0 space-y-5 xl:col-span-7">
+        {activeRepo && <RepoFacts repo={activeRepo} />}
         <CodeHealthGauge
           evaluation={activeRepo?.evaluation}
           benchmark={activeRepo?.benchmark}

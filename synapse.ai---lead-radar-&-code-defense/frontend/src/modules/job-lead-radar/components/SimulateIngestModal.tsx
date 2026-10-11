@@ -15,27 +15,6 @@ interface SimulateIngestModalProps {
   isIngesting: boolean;
 }
 
-const PRESET_POSTS = [
-  {
-    label: 'Hiring post (sample)',
-    platform: 'twitter',
-    authorHandle: '@sample_founder',
-    authorName: 'Sample Founder',
-    sourceChannel: 'Manual import',
-    rawContent:
-      'Hiring a Staff Distributed Systems Engineer to lead our consensus engine in Rust. $220k-$280k + 0.25% equity. Remote friendly. DM me directly!',
-  },
-  {
-    label: 'Job seeker (sample)',
-    platform: 'twitter',
-    authorHandle: '@sample_dev',
-    authorName: 'Sample Developer',
-    sourceChannel: 'Manual import',
-    rawContent:
-      'Hey everyone! I just finished a bootcamp and am currently OPEN TO WORK looking for my first junior web developer position in React and Node. Please hire me! DMs open.',
-  },
-];
-
 const OUTCOME_COPY: Record<IngestOutcome['status'], { title: string; tone: 'success' | 'info' }> = {
   created: { title: 'Lead created', tone: 'success' },
   discarded: { title: 'Not a hiring post (no lead created)', tone: 'info' },
@@ -92,15 +71,6 @@ export const SimulateIngestModal: React.FC<SimulateIngestModalProps> = ({
     }
   };
 
-  const loadPreset = (preset: (typeof PRESET_POSTS)[0]) => {
-    setPlatform(preset.platform);
-    setAuthorHandle(preset.authorHandle);
-    setAuthorName(preset.authorName);
-    setRawContent(preset.rawContent);
-    setOutcome(null);
-    setError(null);
-  };
-
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center bg-scrim p-0 sm:items-center sm:p-4"
@@ -116,26 +86,15 @@ export const SimulateIngestModal: React.FC<SimulateIngestModalProps> = ({
         <div className="flex items-start justify-between gap-3 border-b border-line pb-3">
           <div className="min-w-0">
             <h3 id="simulate-ingest-title" className="text-base font-bold text-ink">
-              Import a social post
+              Add a post
             </h3>
             <p className="text-sm text-ink-soft">
-              The post is stored, then analysed to decide whether it is a hiring lead.
+              Paste text you have. It is stored unchanged as user-provided and unverified, then analysed.
             </p>
           </div>
           <button type="button" onClick={onClose} className="btn btn-secondary btn-icon shrink-0" aria-label="Close">
             <X className="h-4 w-4" />
           </button>
-        </div>
-
-        <div>
-          <span className="field-label">Fill with a sample</span>
-          <div className="flex flex-wrap gap-2">
-            {PRESET_POSTS.map((p) => (
-              <button key={p.label} type="button" onClick={() => loadPreset(p)} className="chip">
-                {p.label}
-              </button>
-            ))}
-          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3">

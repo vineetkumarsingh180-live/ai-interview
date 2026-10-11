@@ -164,7 +164,7 @@ def test_database_schema_has_expected_tables():
     assert set(Base.metadata.tables) == {
         "raw_posts", "job_leads", "lead_embeddings", "outreach_drafts",
         "candidate_repos", "benchmark_suites", "code_evaluation_results",
-        "voice_sessions", "leaderboard_scores",
+        "voice_sessions", "leaderboard_scores", "ingestion_runs",
     }
 
 

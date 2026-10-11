@@ -24,4 +24,5 @@ class LeaderboardScoreResponse(ApiModel):
     composite_percentile: Optional[float] = None
     rank_tier: Optional[str] = None
     status_tag: str
+    is_demo: bool = False
     recorded_at: datetime

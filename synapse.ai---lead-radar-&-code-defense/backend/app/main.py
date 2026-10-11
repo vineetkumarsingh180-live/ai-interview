@@ -14,8 +14,9 @@ from app.shared.database import check_database
 from app.core.api import build_api_router
 from app.core.wiring import wire_dependencies
 from app.shared.errors import register_exception_handlers
+import app.shared.ingestion_log  # noqa: F401  (registers the ingestion_runs table)
 from app.shared.schemas import ApiModel
-from app.shared.gemini import is_configured
+from app.shared.ai import is_configured
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,7 +31,7 @@ async def lifespan(app: FastAPI):
         logger.info("Database reachable.")
     else:
         logger.warning("Database unreachable: DB-backed routes will return 503 until it is available.")
-    if not settings.GEMINI_API_KEY:
+    if not is_configured():
         logger.info("GEMINI_API_KEY not set: AI features will report 'unavailable'.")
     yield
     logger.info("Shutting down Synapse.AI backend.")

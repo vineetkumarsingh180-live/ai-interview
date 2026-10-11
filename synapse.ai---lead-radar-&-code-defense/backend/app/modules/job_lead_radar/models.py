@@ -36,6 +36,21 @@ class RawPost(Base):
     # 'hiring' | 'seeking' | NULL (not classified yet: awaiting analysis)
     classification: Mapped[Optional[str]] = mapped_column(String(20), nullable=True, index=True)
 
+    # ---- provenance ---------------------------------------------------------------------
+    # How the row arrived: api_manual | manual_text | demo_fixture | ...
+    source_type: Mapped[str] = mapped_column(String(40), default="api_manual", server_default="api_manual", index=True)
+    # Never "verified" for user-provided text: unverified | demo_fixture
+    verification_status: Mapped[str] = mapped_column(String(40), default="unverified", server_default="unverified")
+    source_url: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)   # where the text came from, if given
+    posted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)   # when the author posted, if known
+    # sha256 of the normalised text + platform; used for deduplication
+    content_hash: Mapped[Optional[str]] = mapped_column(String(64), unique=True, index=True, nullable=True)
+    provenance: Mapped[dict] = mapped_column(JSON, default=dict)                     # operator note, input file, ...
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", index=True)
+    ingestion_run_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("ingestion_runs.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+
     parsed_lead: Mapped[Optional["JobLead"]] = relationship(
         "JobLead", back_populates="raw_post", uselist=False, cascade="all, delete-orphan"
     )
@@ -67,6 +82,8 @@ class JobLead(Base):
     contact_anchor: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
     enrichment_metadata: Mapped[dict] = mapped_column(JSON, default=dict)
+    # How the structured fields were produced: ai_extracted | operator_entered | demo_fixture
+    entry_source: Mapped[str] = mapped_column(String(30), default="ai_extracted", server_default="ai_extracted")
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
 

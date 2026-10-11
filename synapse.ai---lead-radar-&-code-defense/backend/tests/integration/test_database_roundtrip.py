@@ -58,15 +58,18 @@ async def client():
 
 
 def _stub_ai(monkeypatch, module, text_value, usage=None):
+    """Stub the HTTP layer of the real GeminiProvider; AIService, adapters and services run for real."""
+    from aiservice.providers.gemini import GeminiProvider
+
     monkeypatch.setattr(settings, "GEMINI_API_KEY", "test-key")
 
-    async def fake(payload, **kwargs):
-        body = {"candidates": [{"content": {"parts": [{"text": text_value}]}}]}
+    async def fake(self, body):
+        out = {"candidates": [{"content": {"parts": [{"text": text_value}]}}]}
         if usage:
-            body["usageMetadata"] = usage
-        return body
+            out["usageMetadata"] = usage
+        return out
 
-    monkeypatch.setattr(f"app.modules.{module}.generate_content", fake)
+    monkeypatch.setattr(GeminiProvider, "_post_once", fake)
 
 
 async def test_repo_submission_roundtrip_is_awaiting_analysis(client):
@@ -138,7 +141,7 @@ async def test_outreach_roundtrip_records_real_model_and_history(client, monkeyp
     _stub_ai(monkeypatch, "job_lead_radar.service",
              '{"is_hiring": true, "role_title": "Go Engineer", "company_name": "Beta", "tech_stack": ["Go"]}')
     lead = (await client.post("/api/v1/leads/ingest/trigger", json={
-        "platform": "linkedin", "rawContent": "Beta hiring", "externalId": "l-1"})).json()["lead"]
+        "platform": "linkedin", "rawContent": "Beta is hiring a Go Engineer (Go, remote).", "externalId": "l-1"})).json()["lead"]
 
     _stub_ai(monkeypatch, "job_lead_radar.service",
              '{"pitch_subject": "Go at Beta", "generated_pitch": "Hello Beta"}', usage={"promptTokenCount": 5, "candidatesTokenCount": 3})
@@ -184,3 +187,63 @@ async def test_voice_interview_roundtrip_publishes_unscored_row_to_leaderboard(c
 async def test_health_reports_connected_database(client):
     body = (await client.get("/api/health")).json()
     assert body["database"] == "connected" and body["status"] == "ok"
+
+
+async def test_api_exposes_provenance_and_dedupes_by_content_not_only_external_id(client, monkeypatch):
+    monkeypatch.setattr(settings, "GEMINI_API_KEY", "")
+    text = "Acme  is hiring\n a Rust engineer."
+    first = await client.post("/api/v1/leads/ingest/trigger", json={"platform": "twitter", "rawContent": text, "externalId": "a-1"})
+    assert first.status_code == 201 and first.json()["status"] == "awaiting_analysis"
+
+    # same text, different external id, different whitespace -> duplicate by content
+    dup = await client.post("/api/v1/leads/ingest/trigger",
+                            json={"platform": "twitter", "rawContent": "Acme is hiring a Rust   engineer.", "externalId": "a-2"})
+    assert dup.status_code == 409 and dup.json()["code"] == "duplicate_post"
+
+    # provenance is stored and visible once the post becomes a lead via the analysis path
+    _stub_ai(monkeypatch, "job_lead_radar.service",
+             '{"is_hiring": true, "role_title": "Rust Engineer", "company_name": "Acme"}')
+    created = (await client.post("/api/v1/leads/ingest/trigger",
+                                 json={"platform": "reddit", "rawContent": "Acme is hiring a Rust Engineer. Different post.", "externalId": "b-1"})).json()
+    post = created["lead"]["rawPost"]
+    assert (post["sourceType"], post["verificationStatus"], post["isDemo"]) == ("api_manual", "unverified", False)
+    assert created["lead"]["entrySource"] == "ai_extracted" and created["lead"]["isDemo"] is False
+
+
+async def test_demo_fixtures_are_labelled_filterable_and_excluded_from_telemetry(client):
+    from app.modules import job_lead_radar
+    from app.shared.ingestion_log import IngestContext
+
+    # create a demo fixture through the same public interface DbIngestion uses
+    session_gen = app.dependency_overrides[get_db]()
+    db = await session_gen.__anext__()
+    res = await job_lead_radar.ingest_post_record(
+        db,
+        job_lead_radar.PostRecord(
+            platform="twitter", raw_content="[DEMO] sample", external_id="demo-x",
+            structured=job_lead_radar.StructuredLead(role_title="Demo Role", company_name="Demo Co"),
+        ),
+        IngestContext(source_type="demo_fixture", is_demo=True),
+    )
+    assert res.status == "created"
+
+    all_leads = (await client.get("/api/v1/leads/ingest/recent")).json()
+    assert [l["isDemo"] for l in all_leads] == [True]
+    assert all_leads[0]["entrySource"] == "demo_fixture"
+    assert all_leads[0]["rawPost"]["verificationStatus"] == "demo_fixture"
+    assert (await client.get("/api/v1/leads/ingest/recent?includeDemo=false")).json() == []
+
+    t = (await client.get("/api/v1/leads/ingest/telemetry")).json()
+    assert (t["totalScanned24h"], t["qualifiedLeadsCount"], t["demoPostsCount"]) == (0, 0, 1)
+
+
+async def test_duplicate_repository_url_is_a_409_and_github_facts_serialize(client):
+    body = {"candidateName": "Ada", "candidateGithubHandle": "ada", "repoUrl": "https://github.com/ada/engine"}
+    ok = await client.post("/api/v1/assessment/repo/submit", json=body)
+    assert ok.status_code == 201
+    repo = ok.json()
+    assert (repo["sourceType"], repo["verificationStatus"], repo["githubMetadata"], repo["metadataFetchedAt"]) == (
+        "api_manual", "unverified", None, None)
+    again = await client.post("/api/v1/assessment/repo/submit", json={**body, "repoUrl": "https://github.com/Ada/Engine"})
+    assert again.status_code == 409 and again.json()["code"] == "duplicate_repository"
+    assert len((await client.get("/api/v1/assessment/repo/recent")).json()) == 1

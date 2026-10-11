@@ -46,17 +46,17 @@ export const LeadCard: React.FC<LeadCardProps> = ({ lead, onDraftOutreach }) => 
       <div className="min-w-0 space-y-3">
         {/* Source + match */}
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex min-w-0 items-center gap-2">
-            <span className="badge badge-neutral">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="badge badge-neutral shrink-0">
               {platformIcon(lead.rawPost?.platform || '')}
               <span className="capitalize">{lead.rawPost?.platform || 'Unknown source'}</span>
             </span>
             {lead.rawPost?.authorHandle && (
-              <span className="truncate text-xs text-ink-soft">{lead.rawPost.authorHandle}</span>
+              <span className="min-w-0 break-all text-xs text-ink-soft">{lead.rawPost.authorHandle}</span>
             )}
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5">
             {lead.urgencyTier === 'Immediate' && (
               <span className="badge badge-warm">
                 <Clock className="h-3 w-3" />
@@ -70,7 +70,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({ lead, onDraftOutreach }) => 
             )}
             <span className="badge badge-neutral" title="No matching model exists yet.">
               <Zap className="h-3 w-3" />
-              {lead.matchScore != null ? `${lead.matchScore.toFixed(1)}% match` : 'Match not measured'}
+              {lead.matchScore != null ? `${lead.matchScore.toFixed(1)}% match${lead.isDemo ? ' (demo)' : ''}` : 'Match not measured'}
             </span>
           </div>
         </div>
@@ -116,6 +116,30 @@ export const LeadCard: React.FC<LeadCardProps> = ({ lead, onDraftOutreach }) => 
             <p className="line-clamp-3 break-words">“{snippet}”</p>
           </blockquote>
         )}
+
+        {/* Provenance: where this came from and how far it can be trusted */}
+        <p className="flex flex-wrap items-center gap-1.5 text-xs text-ink-alt">
+          <span className="badge badge-neutral" title="Stored exactly as provided; not checked by anyone.">
+            {lead.rawPost?.verificationStatus === 'unverified' ? 'User-provided, unverified' : 'Source not verified'}
+          </span>
+          <span className="badge badge-neutral">
+            {lead.entrySource === 'operator_entered'
+              ? 'Fields entered by hand'
+              : lead.entrySource === 'ai_extracted'
+              ? 'Fields extracted by AI'
+              : 'Fixture fields'}
+          </span>
+          {lead.rawPost?.sourceUrl && /^https?:\/\//i.test(lead.rawPost.sourceUrl) && (
+            <a
+              href={lead.rawPost.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-mocha underline underline-offset-2"
+            >
+              Source link
+            </a>
+          )}
+        </p>
 
         {/* Stack */}
         <ul className="flex flex-wrap gap-1.5" aria-label="Tech stack">

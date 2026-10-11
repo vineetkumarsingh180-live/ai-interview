@@ -15,6 +15,7 @@ psql -h localhost -d postgres -f backend/db/setup_local_db.sql      # pgvector m
 # 3. Backend
 cd backend
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt -r requirements-dev.txt
+# (requirements.txt also installs the internal AI package: -e ../AIService)
 cp .env.example .env                       # optional: add GEMINI_API_KEY
 .venv/bin/alembic upgrade head
 .venv/bin/uvicorn app.main:app --port 8000 # http://127.0.0.1:8000/api/v1/docs
@@ -23,5 +24,5 @@ cp .env.example .env                       # optional: add GEMINI_API_KEY
 cd frontend && npm install && npm run dev  # http://localhost:5173
 ```
 
-Optional demo fixtures: `cd backend && .venv/bin/python scripts/seed_demo.py` (labelled, removable with `--remove`).
+Optional demo fixtures: `backend/.venv/bin/python DbIngestion/ingest.py demo load` (labelled, removable with `demo remove`).
 Checks: `cd frontend && npm run verify` and `cd backend && .venv/bin/python -m pytest`.

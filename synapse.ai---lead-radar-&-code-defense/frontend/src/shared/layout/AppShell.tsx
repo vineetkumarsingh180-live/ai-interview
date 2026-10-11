@@ -35,7 +35,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children, sections, breadcru
               type="button"
               id="open-nav-btn"
               onClick={() => setIsNavOpen(true)}
-              className="btn btn-secondary btn-icon lg:hidden"
+              className="btn btn-secondary btn-icon shrink-0 lg:hidden"
               aria-label="Open navigation menu"
               aria-expanded={isNavOpen}
               aria-controls="left-navbar"
@@ -45,14 +45,14 @@ export const AppShell: React.FC<AppShellProps> = ({ children, sections, breadcru
             <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 text-sm">
               <span className="hidden truncate text-ink-soft sm:inline">{breadcrumb.section}</span>
               <span className="hidden text-ink-soft sm:inline" aria-hidden="true">/</span>
-              <span className="truncate font-semibold text-ink">{breadcrumb.page}</span>
+              <span className="min-w-0 break-words font-semibold leading-tight text-ink">{breadcrumb.page}</span>
             </nav>
           </div>
 
           {/* Live backend status; never a static "demo" claim. */}
           <span
             role="status"
-            className={`badge shrink-0 ${
+            className={`badge min-w-0 max-w-[8.5rem] shrink whitespace-normal text-center leading-tight sm:max-w-none sm:shrink-0 sm:whitespace-nowrap ${
               status.summary.tone === 'success' ? 'badge-success' : status.summary.tone === 'danger' ? 'badge-danger' : 'badge-warm'
             }`}
             title={status.items.map((i) => `${i.label}: ${i.value}`).join(' · ')}

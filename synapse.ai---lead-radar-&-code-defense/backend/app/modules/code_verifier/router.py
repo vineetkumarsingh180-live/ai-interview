@@ -32,8 +32,12 @@ async def submit_repo(submission: RepoSubmissionRequest, db: AsyncSession = Depe
     response_model=List[CandidateRepoDetailResponse],
     summary="Submitted repositories with their measured results, if any (newest first)",
 )
-async def get_recent_repos(limit: int = Query(20, ge=1, le=50), db: AsyncSession = Depends(get_db)):
-    return await CodeVerifierService.list_recent_repos(db=db, limit=limit)
+async def get_recent_repos(
+    limit: int = Query(20, ge=1, le=50),
+    include_demo: bool = Query(True, alias="includeDemo", description="Include labelled demo fixtures"),
+    db: AsyncSession = Depends(get_db),
+):
+    return await CodeVerifierService.list_recent_repos(db=db, limit=limit, include_demo=include_demo)
 
 
 @router.get("/{repo_id}", response_model=CandidateRepoDetailResponse, summary="One repository and its results")

@@ -46,6 +46,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ leaderboard,
         <span>
           Interviews are not scored automatically, so candidates are listed by recency, not rank. A value appears
           only when someone or something actually measured it. Nothing here is a hiring recommendation.
+          {leaderboard.some((i) => i.isDemo) && ' Rows marked Demo fixture carry fixture values, not measurements.'}
         </span>
       </p>
 
@@ -71,22 +72,23 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ leaderboard,
         </p>
       ) : (
         <>
-          {/* Small screens: one card per candidate, nothing hidden or clipped */}
-          <ul className="space-y-3 md:hidden">
+          {/* Below xl (sidebar + content is too narrow for 5 columns): one card per candidate, nothing hidden or clipped */}
+          <ul className="space-y-3 xl:hidden">
             {leaderboard.map((item) => (
               <li key={item.id} className="well space-y-3 p-3">
                 <div className="flex items-center gap-3">
                   <Avatar item={item} />
-                  <div className="min-w-0">
-                    <span className="block truncate text-sm font-bold text-ink">{item.candidateName}</span>
+                  <div className="min-w-0 flex-1">
+                    <span className="block break-words text-sm font-bold text-ink">{item.candidateName}</span>
+                    {item.isDemo && <span className="badge badge-warm mt-1">Demo fixture</span>}
                     <span className="block break-words text-xs text-ink-alt">
                       {[item.candidateHandle && `@${item.candidateHandle}`, item.targetRole].filter(Boolean).join(' • ') || 'No profile details'}
                     </span>
                   </div>
                 </div>
-                <p className="flex min-w-0 items-center gap-1.5 text-xs text-mocha">
-                  <GitBranch className="h-3.5 w-3.5 shrink-0" />
-                  <span className="truncate">{item.repoName ?? 'No repository linked'}</span>
+                <p className="flex min-w-0 items-start gap-1.5 text-xs text-mocha">
+                  <GitBranch className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  <span className="min-w-0 break-all">{item.repoName ?? 'No repository linked'}</span>
                 </p>
                 <dl className="grid grid-cols-2 gap-2 text-xs">
                   <div className="rounded-lg bg-surface p-2">
@@ -106,8 +108,8 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ leaderboard,
             ))}
           </ul>
 
-          {/* md and up: table that scrolls inside its own container */}
-          <div className="hidden overflow-x-auto rounded-xl border border-line md:block" tabIndex={0} aria-label="Results table, scrollable">
+          {/* xl and up: table that scrolls inside its own container */}
+          <div className="hidden overflow-x-auto rounded-xl border border-line xl:block" tabIndex={0} aria-label="Results table, scrollable">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
                 <tr className="border-b border-line bg-canvas-alt text-xs uppercase tracking-wider text-ink-alt">
@@ -121,26 +123,35 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ leaderboard,
               <tbody className="divide-y divide-line">
                 {leaderboard.map((item) => (
                   <tr key={item.id} className="transition-colors hover:bg-mocha-tint">
-                    <td className="px-3 py-3">
+                    <td className="min-w-[12rem] max-w-[22rem] px-3 py-3">
                       <div className="flex items-center gap-2.5">
                         <Avatar item={item} />
                         <div className="min-w-0">
-                          <span className="block font-bold text-ink">{item.candidateName}</span>
-                          <span className="block text-xs text-ink-alt">
-                            {[item.candidateHandle && `@${item.candidateHandle}`, item.targetRole].filter(Boolean).join(' • ') || 'No profile details'}
+                          <span className="block break-words font-bold text-ink">{item.candidateName}</span>
+                          {item.isDemo && <span className="badge badge-warm mt-1">Demo fixture</span>}
+                          <span className="block break-words text-xs text-ink-alt">
+                            {item.candidateHandle || item.targetRole ? (
+                              <>
+                                {item.candidateHandle && <span className="break-all">@{item.candidateHandle}</span>}
+                                {item.candidateHandle && item.targetRole && ' • '}
+                                {item.targetRole}
+                              </>
+                            ) : (
+                              'No profile details'
+                            )}
                           </span>
                         </div>
                       </div>
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-mocha">
-                      <span className="inline-flex items-center gap-1.5">
-                        <GitBranch className="h-3.5 w-3.5 text-ink-alt" />
+                    <td className="min-w-[10rem] max-w-[16rem] px-3 py-3 text-mocha">
+                      <span className="inline-flex items-start gap-1.5 [overflow-wrap:anywhere]">
+                        <GitBranch className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ink-alt" />
                         {item.repoName ?? <span className="text-ink-alt">No repository</span>}
                       </span>
                     </td>
                     <td className="whitespace-nowrap px-3 py-3 text-right tabular-nums text-ink">{fmt(item.codeHealthScore)}</td>
                     <td className="whitespace-nowrap px-3 py-3 text-right tabular-nums text-ink">{fmt(item.voiceDefenseScore)}</td>
-                    <td className="px-3 py-3">
+                    <td className="min-w-[10rem] px-3 py-3">
                       <span className="badge badge-warm">{statusLabel(item.statusTag)}</span>
                     </td>
                   </tr>

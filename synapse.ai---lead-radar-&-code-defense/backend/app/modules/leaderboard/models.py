@@ -10,7 +10,7 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import DateTime, Float, ForeignKey, String
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -37,4 +37,5 @@ class LeaderboardScore(Base):
     rank_tier: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, index=True)
 
     status_tag: Mapped[str] = mapped_column(String(50), default="needs_human_review")
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", index=True)
     recorded_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)

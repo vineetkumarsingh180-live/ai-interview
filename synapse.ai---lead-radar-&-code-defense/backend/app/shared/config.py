@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-2.5-flash"
 
+    # GitHub REST API (optional token raises the rate limit; metadata only, no code is ever fetched).
+    GITHUB_TOKEN: str = ""
+    GITHUB_API_URL: str = "https://api.github.com"
+
     # Origins allowed to call the API directly from a browser (the Vite dev server proxies /api,
     # so same-origin calls need no CORS at all).
     CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]

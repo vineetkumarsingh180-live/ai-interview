@@ -12,8 +12,10 @@ from app.shared.database import AsyncSessionLocal, get_db
 from app.shared.errors import ApiError, NotFound
 
 from .interfaces import (
+    Interviewer,
     LeaderboardPublisher,
     RepositoryLookup,
+    get_interviewer,
     get_leaderboard_publisher,
     get_repository_lookup,
 )
@@ -48,9 +50,10 @@ async def process_voice_turn(
     db: AsyncSession = Depends(get_db),
     leaderboard: LeaderboardPublisher = Depends(get_leaderboard_publisher),
     repositories: RepositoryLookup = Depends(get_repository_lookup),
+    interviewer: Interviewer = Depends(get_interviewer),
 ):
     return await VoiceInterviewService.process_candidate_turn(
-        db=db, payload=turn, leaderboard=leaderboard, repositories=repositories
+        db=db, payload=turn, leaderboard=leaderboard, repositories=repositories, interviewer=interviewer
     )
 
 
@@ -68,6 +71,7 @@ async def voice_defense_websocket_endpoint(
     session_id: UUID,
     leaderboard: LeaderboardPublisher = Depends(get_leaderboard_publisher),
     repositories: RepositoryLookup = Depends(get_repository_lookup),
+    interviewer: Interviewer = Depends(get_interviewer),
 ):
     """Text-turn WebSocket: send {"type":"candidate_speech","text":"..."}; same semantics as POST /turn."""
     await websocket.accept()
@@ -84,6 +88,7 @@ async def voice_defense_websocket_endpoint(
                         payload=VoiceTurnInput(session_id=session_id, candidate_speech_text=data.get("text", "")),
                         leaderboard=leaderboard,
                         repositories=repositories,
+                        interviewer=interviewer,
                     )
                 except ApiError as exc:
                     await websocket.send_json({"event": "error", "code": exc.code, "detail": exc.detail})

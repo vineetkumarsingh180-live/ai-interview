@@ -6,7 +6,7 @@ module never imports another module.
 """
 
 from dataclasses import dataclass
-from typing import Optional, Protocol
+from typing import Dict, List, Literal, Optional, Protocol
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -40,6 +40,23 @@ class LeaderboardPublisher(Protocol):
         target_role: Optional[str],
         composite_score: Optional[float],
     ) -> None: ...
+
+
+@dataclass(frozen=True)
+class FollowUpQuestion:
+    status: Literal["generated", "unavailable", "invalid_response"]
+    question: Optional[str] = None
+    reason: Optional[str] = None
+
+
+class Interviewer(Protocol):
+    """Produces the next interviewer question from the real dialogue (bound to AIService)."""
+
+    async def follow_up(self, turns: List[Dict[str, str]]) -> FollowUpQuestion: ...
+
+
+def get_interviewer() -> Interviewer:
+    raise RuntimeError("Interviewer is not wired; see app/core/wiring.py")
 
 
 def get_leaderboard_publisher() -> LeaderboardPublisher:

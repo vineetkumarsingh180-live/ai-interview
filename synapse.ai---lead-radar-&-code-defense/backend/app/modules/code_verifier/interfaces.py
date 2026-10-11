@@ -2,8 +2,8 @@
 Code Verifier module: public read contract for other modules (consumed via the composition root).
 """
 
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Dict, List, Literal, Optional, Protocol, Tuple
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,3 +34,27 @@ class RepositoryDirectory:
             repo_name=repo.repo_name,
             target_role=repo.target_role,
         )
+
+
+@dataclass(frozen=True)
+class RepositoryAnalysis:
+    """Result of an evidence-based analysis. `unavailable` is the honest answer without repository content."""
+
+    status: Literal["analyzed", "unavailable", "invalid_response"]
+    reason: Optional[str] = None
+    facts: Dict[str, object] = field(default_factory=dict)
+    summary: Optional[str] = None
+    interview_topics: List[str] = field(default_factory=list)
+    model: Optional[str] = None
+
+
+class RepositoryAnalyzer(Protocol):
+    """Analyses repository content the caller actually holds (bound to AIService)."""
+
+    async def analyze(
+        self, *, repo_url: str, commit_sha: Optional[str], files: List[Tuple[str, str]]
+    ) -> RepositoryAnalysis: ...
+
+
+def get_repository_analyzer() -> RepositoryAnalyzer:
+    raise RuntimeError("RepositoryAnalyzer is not wired; see app/core/wiring.py")

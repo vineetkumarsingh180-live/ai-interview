@@ -15,6 +15,6 @@ test('renders the lead radar (loading state) without a backend', () => {
     </QueryClientProvider>,
   );
   assert.match(html, /Lead radar/);
-  assert.match(html, /Simulate raw post/);
-  assert.match(html, /Filter title, company or stack/);
+  assert.match(html, /Add a post/);
+  assert.match(html, /placeholder="Filter leads"/);
 });

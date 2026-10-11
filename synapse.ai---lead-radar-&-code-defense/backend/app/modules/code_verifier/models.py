@@ -10,7 +10,7 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, BigInteger, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -34,6 +34,18 @@ class CandidateRepo(Base):
     status: Mapped[str] = mapped_column(String(50), default="awaiting_analysis", index=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", index=True)
     submitted_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+    # ---- provenance ---------------------------------------------------------------------
+    # api_manual (typed by an operator, nothing fetched) | github_api | demo_fixture
+    source_type: Mapped[str] = mapped_column(String(40), default="api_manual", server_default="api_manual", index=True)
+    # unverified | github_metadata (facts fetched from GitHub, not analysed) | demo_fixture
+    verification_status: Mapped[str] = mapped_column(String(40), default="unverified", server_default="unverified")
+    github_repo_id: Mapped[Optional[int]] = mapped_column(BigInteger, unique=True, nullable=True)  # GitHub's immutable id
+    github_metadata: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)  # exactly what GitHub returned
+    metadata_fetched_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    ingestion_run_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("ingestion_runs.id", ondelete="SET NULL"), nullable=True, index=True
+    )
 
     benchmark: Mapped[Optional["BenchmarkSuite"]] = relationship(
         "BenchmarkSuite", back_populates="repo", uselist=False, cascade="all, delete-orphan"

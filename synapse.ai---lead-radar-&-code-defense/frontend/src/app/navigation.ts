@@ -42,7 +42,7 @@ export function buildNavSections({ activeTab, activeSubView, go }: NavState): Na
         {
           id: 'nav-subview-voice',
           icon: Mic,
-          title: 'Voice Interview',
+          title: 'Voice Defense',
           subtitle: 'Spoken code defense',
           active: inAssessment && activeSubView === 'voice-defense',
           onSelect: () => go('assessment', 'voice-defense'),

@@ -7,6 +7,9 @@
  *   app/ ──▶ modules/<name> (public index only) ──▶ shared/
  *   modules/<a> ──✗──▶ modules/<b>        shared/ ──✗──▶ modules/, app/
  *
+ * Also: the frontend never imports backend/AIService/DbIngestion code, AI or database SDKs, and never
+ * contains provider keys, provider endpoints or database URLs.
+ *
  * Usage: node scripts/check-architecture.mjs [--root <dir>]
  */
 import fs from 'node:fs';
@@ -127,6 +130,19 @@ function checkArea({ name, base, alias }) {
     stack.pop(); color.set(n, 2);
   };
   for (const f of graph.keys()) if (!color.get(f)) dfs(f);
+  // The browser never reaches the backend code, the AI package, the database or an AI provider.
+  const SERVER_SPEC = /(^|[\/@])(backend|aiservice|dbingestion)([\/]|$)|\.py$/i;
+  const AI_SDK = /^(@google\/genai|@google\/generative-ai|openai|@anthropic-ai\/sdk|anthropic|langchain|pg|postgres|express|koa|fastify)(\/|$)/;
+  const SECRET = /GEMINI_API_KEY|VITE_GEMINI|generativelanguage\.googleapis\.com|AIza[0-9A-Za-z_-]{20,}|DATABASE_URL|postgresql(\+asyncpg)?:\/\//;
+  for (const file of files) {
+    const text = fs.readFileSync(file, 'utf8');
+    for (const spec of importsOf(text)) {
+      if (SERVER_SPEC.test(spec)) report('frontend-must-not-import-server-code', file, `imports "${spec}"`);
+      if (AI_SDK.test(spec)) report('frontend-must-not-use-ai-or-server-sdk', file, `imports "${spec}" (all AI and database access goes through FastAPI)`);
+    }
+    const m = SECRET.exec(text);
+    if (m) report('no-secrets-or-provider-endpoints-in-frontend', file, `contains "${m[0]}"`);
+  }
   return files.length;
 }
 

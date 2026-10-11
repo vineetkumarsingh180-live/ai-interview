@@ -6,7 +6,7 @@ import { buildNavSections, getBreadcrumb } from '@app/navigation';
 
 test('app shell renders navigation for all four modules and the default module', () => {
   const html = renderToString(<App />);
-  for (const label of ['Job Lead Radar', 'Code Verifier', 'Voice Interview', 'Leaderboard']) {
+  for (const label of ['Job Lead Radar', 'Code Verifier', 'Voice Defense', 'Leaderboard']) {
     assert.ok(html.includes(label), label);
   }
   assert.match(html, /Lead radar/);          // default view is the lead radar

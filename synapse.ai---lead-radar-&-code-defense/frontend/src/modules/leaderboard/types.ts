@@ -13,5 +13,7 @@ export interface LeaderboardItem {
   rankTier: string | null;
   /** A review state such as "needs_human_review"; never a hiring recommendation. */
   statusTag: string;
+  /** True for clearly labelled showcase fixtures: their values are not measurements. */
+  isDemo?: boolean;
   recordedAt: string;
 }

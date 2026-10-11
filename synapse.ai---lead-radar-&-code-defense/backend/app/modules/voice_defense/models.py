@@ -10,7 +10,7 @@ import uuid
 from datetime import datetime
 from typing import List, Optional
 
-from sqlalchemy import JSON, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -38,6 +38,9 @@ class VoiceSession(Base):
 
     # Review state, e.g. 'needs_human_review'. Never a hire/reject decision.
     defense_verdict: Mapped[str] = mapped_column(String(50), default="needs_human_review", index=True)
+
+    # True for clearly labelled showcase fixtures (never a real interview)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", index=True)
 
     transcript_turns: Mapped[List[dict]] = mapped_column(JSON, default=list)
     key_takeaways: Mapped[List[str]] = mapped_column(JSON, default=list)

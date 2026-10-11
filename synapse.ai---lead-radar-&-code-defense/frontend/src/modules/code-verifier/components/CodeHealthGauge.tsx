@@ -21,8 +21,8 @@ interface MetricTileProps {
 
 const MetricTile: React.FC<MetricTileProps> = ({ label, value, icon, note }) => (
   <div className="min-w-0 rounded-2xl border border-line bg-surface p-3.5 shadow-clay">
-    <div className="mb-1 flex items-center justify-between gap-2 text-xs text-ink-soft">
-      <span className="truncate">{label}</span>
+    <div className="mb-1 flex items-start justify-between gap-2 text-xs text-ink-soft">
+      <span className="min-w-0 break-words">{label}</span>
       {icon}
     </div>
     <div className={`break-words font-bold tabular-nums ${value ? 'text-xl text-ink' : 'text-sm text-ink-soft'}`}>
@@ -56,7 +56,9 @@ export const CodeHealthGauge: React.FC<CodeHealthGaugeProps> = ({ evaluation, be
           </span>
           <div className="min-w-0">
             <h3 className="text-base font-bold leading-tight text-ink">Code assessment</h3>
-            <p className="text-sm text-ink-soft">Measured results for the selected repository.</p>
+            <p className="text-sm text-ink-soft">
+              {isDemo && (evaluation || benchmark) ? 'Demonstration values for the selected repository.' : 'Measured results for the selected repository.'}
+            </p>
           </div>
         </div>
         {isDemo && <span className="badge badge-warm shrink-0">Demo fixture</span>}
@@ -66,8 +68,9 @@ export const CodeHealthGauge: React.FC<CodeHealthGaugeProps> = ({ evaluation, be
       <p className="flex items-start gap-2 rounded-xl border border-line-strong bg-canvas-alt p-3 text-sm text-ink">
         <Info className="mt-0.5 h-4 w-4 shrink-0 text-warm" aria-hidden="true" />
         <span>
-          Repository analysis is not available in this build: submissions are stored and wait for an analysis
-          engine. A value appears here only when it was actually measured; scores are never a hiring decision.
+          {isDemo && (evaluation || benchmark)
+            ? 'Demo data: these numbers are fixture values shown to demonstrate the layout. Nothing was run or measured, and no score is a hiring decision.'
+            : 'Repository analysis is not available in this build: submissions are stored and wait for an analysis engine. A value appears here only when it was actually measured; scores are never a hiring decision.'}
         </span>
       </p>
 
@@ -106,7 +109,7 @@ export const CodeHealthGauge: React.FC<CodeHealthGaugeProps> = ({ evaluation, be
                 </div>
               </div>
               <p className="mt-3 text-center text-xs text-ink-alt">
-                {score != null ? 'Overall index (reported by the evaluation)' : NOT_MEASURED}
+                {score != null ? (isDemo ? 'Overall index (demo value)' : 'Overall index (reported by the evaluation)') : NOT_MEASURED}
               </p>
             </div>
 

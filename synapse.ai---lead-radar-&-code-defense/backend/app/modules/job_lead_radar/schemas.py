@@ -35,6 +35,12 @@ class RawPostResponse(ApiModel):
     source_channel: str
     ingested_at: datetime
     is_processed: bool
+    # provenance: how this text arrived and how much it can be trusted
+    source_type: str = Field(description="api_manual | manual_text | demo_fixture")
+    verification_status: str = Field(description="unverified | demo_fixture. Never 'verified' for user-provided text")
+    source_url: Optional[str] = None
+    posted_at: Optional[datetime] = None
+    is_demo: bool = False
 
 
 class ParsedLeadExtraction(ApiModel):
@@ -74,6 +80,7 @@ class JobLeadResponse(ApiModel):
     urgency_tier: Optional[str] = None
     contact_anchor: Optional[str] = None
     enrichment_metadata: Dict[str, Any] = Field(default_factory=dict)
+    entry_source: str = Field(default="ai_extracted", description="ai_extracted | operator_entered | demo_fixture")
     is_demo: bool = Field(default=False, description="True for clearly labelled development fixtures")
     created_at: datetime
     raw_post: Optional[RawPostResponse] = None
@@ -94,6 +101,12 @@ class IngestionTelemetryResponse(ApiModel):
     qualified_leads_count: int
     seeking_discarded_count: int
     awaiting_analysis_count: int
+    demo_posts_count: int = Field(default=0, description="Labelled demo fixtures; excluded from the counts above")
+    # The same 24h measures over labelled demo fixtures only. Reported separately, never mixed in.
+    demo_scanned_24h: int = Field(default=0, alias="demoScanned24h")
+    demo_qualified_leads_count: int = 0
+    demo_seeking_discarded_count: int = 0
+    demo_awaiting_analysis_count: int = 0
     channels_monitored: List[str]
     avg_latency_ms: Optional[float] = Field(default=None, description="Null: latency is not measured")
 

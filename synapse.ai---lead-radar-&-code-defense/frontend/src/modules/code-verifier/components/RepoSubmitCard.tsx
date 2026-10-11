@@ -153,7 +153,7 @@ export const RepoSubmitCard: React.FC<RepoSubmitCardProps> = ({
       )}
 
       <div className="space-y-2">
-        <span className="eyebrow block">Submissions ({repos.length})</span>
+        <span className="eyebrow block">Submissions{loadError ? '' : ` (${repos.length})`}</span>
         {loadError ? (
           <p role="alert" className="flex items-start gap-2 rounded-lg border border-danger/30 bg-danger-tint p-2.5 text-sm text-danger">
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -176,13 +176,13 @@ export const RepoSubmitCard: React.FC<RepoSubmitCardProps> = ({
                     type="button"
                     aria-pressed={isSelected}
                     onClick={() => onSelectRepo(r.id)}
-                    className={`flex w-full cursor-pointer items-center justify-between gap-3 rounded-xl border p-3 text-left transition-colors focus-visible:shadow-focus ${
+                    className={`block w-full cursor-pointer rounded-xl border p-3 text-left transition-colors focus-visible:shadow-focus ${
                       isSelected
                         ? 'border-mocha bg-mocha-tint'
                         : 'border-line-strong bg-surface hover:bg-canvas-alt'
                     }`}
                   >
-                    <div className="flex min-w-0 items-center gap-3">
+                    <span className="flex items-start gap-3">
                       <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-line-strong bg-canvas-alt">
                         {r.candidateAvatarUrl ? (
                           <img src={r.candidateAvatarUrl} alt="" className="h-full w-full object-cover" />
@@ -190,28 +190,26 @@ export const RepoSubmitCard: React.FC<RepoSubmitCardProps> = ({
                           <User className="h-4 w-4 text-mocha" />
                         )}
                       </span>
-                      <div className="min-w-0">
-                        <div className="flex min-w-0 flex-wrap items-baseline gap-x-2">
-                          <span className="truncate text-sm font-semibold text-ink">{r.candidateName}</span>
-                          <span className={`truncate text-xs text-ink-alt`}>@{r.candidateGithubHandle}</span>
-                        </div>
-                        <p className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-mocha">
+                      <span className="block min-w-0 flex-1">
+                        <span className="block break-words text-sm font-semibold text-ink">{r.candidateName}</span>
+                        <span className="block break-all text-xs text-ink-alt">@{r.candidateGithubHandle}</span>
+                        <span className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-mocha">
                           <GitBranch className="h-3 w-3 shrink-0" />
-                          <span className="truncate">{r.repoName}</span>
-                          <span className="shrink-0 text-ink-alt">· {r.language ?? 'language unknown'}</span>
-                          {r.isDemo && <span className="badge badge-warm shrink-0">Demo fixture</span>}
-                        </p>
-                      </div>
-                    </div>
+                          <span className="min-w-0 break-all">{r.repoName}</span>
+                          <span className="text-ink-alt">· {r.language ?? 'language unknown'}</span>
+                          {r.isDemo && <span className="badge badge-warm">Demo fixture</span>}
+                        </span>
+                      </span>
+                    </span>
 
-                    <div className="shrink-0 text-right">
-                      <div className="text-sm font-bold tabular-nums text-ink">
+                    <span className="mt-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 border-t border-line pt-2">
+                      <span className="text-sm font-bold tabular-nums text-ink">
                         {score != null ? `${score} / 100` : statusLabel ?? 'Not measured'}
-                      </div>
-                      <span className={`block text-xs text-ink-alt`}>
+                      </span>
+                      <span className="text-xs text-ink-alt">
                         {coverage != null ? `${coverage}% coverage` : 'Coverage not measured'}
                       </span>
-                    </div>
+                    </span>
                   </button>
                 </li>
               );

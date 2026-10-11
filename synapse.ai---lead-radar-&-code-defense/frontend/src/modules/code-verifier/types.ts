@@ -25,6 +25,22 @@ export interface CodeEvaluation {
   evaluatedAt: string;
 }
 
+export interface GithubMetadata {
+  full_name?: string;
+  description?: string | null;
+  topics?: string[];
+  languages_bytes?: Record<string, number>;
+  stars?: number;
+  forks?: number;
+  open_issues?: number;
+  license?: string | null;
+  visibility?: string | null;
+  archived?: boolean;
+  fork?: boolean;
+  pushed_at?: string | null;
+  created_at?: string | null;
+}
+
 export type RepoStatus = 'awaiting_analysis' | 'analyzing' | 'analyzed' | 'failed' | string;
 
 export interface CandidateRepo {
@@ -42,6 +58,13 @@ export interface CandidateRepo {
   /** True for clearly labelled development fixtures. */
   isDemo: boolean;
   submittedAt: string;
+  /** api_manual | github_api | demo_fixture */
+  sourceType: string;
+  /** unverified | github_metadata (fetched from GitHub, not analysed) | demo_fixture */
+  verificationStatus: string;
+  /** Exactly what GitHub returned (null when nothing was fetched). */
+  githubMetadata?: GithubMetadata | null;
+  metadataFetchedAt?: string | null;
   benchmark?: BenchmarkSuite | null;
   evaluation?: CodeEvaluation | null;
 }

@@ -1,5 +1,6 @@
 """Test doubles shared by the backend tests (no PostgreSQL needed)."""
 import uuid
+from contextlib import asynccontextmanager
 from types import SimpleNamespace
 
 
@@ -33,6 +34,10 @@ class FakeDb:
 
     def add(self, obj):
         self.added.append(obj)
+
+    @asynccontextmanager
+    async def begin_nested(self):
+        yield
 
     @staticmethod
     def _apply_defaults(obj):

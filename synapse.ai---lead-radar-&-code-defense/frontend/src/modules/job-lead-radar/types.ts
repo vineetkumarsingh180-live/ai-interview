@@ -11,6 +11,13 @@ export interface RawPost {
   sourceChannel: string;
   ingestedAt: string;
   isProcessed: boolean;
+  /** Provenance: api_manual | manual_text | demo_fixture */
+  sourceType: string;
+  /** unverified | demo_fixture. User-provided text is never "verified". */
+  verificationStatus: string;
+  sourceUrl?: string | null;
+  postedAt?: string | null;
+  isDemo: boolean;
 }
 
 export interface JobLead {
@@ -34,6 +41,8 @@ export interface JobLead {
   enrichmentMetadata: {
     summary?: string;
   };
+  /** How the structured fields were produced: ai_extracted | operator_entered | demo_fixture */
+  entrySource: string;
   /** True for clearly labelled development fixtures. */
   isDemo: boolean;
   createdAt: string;
@@ -54,6 +63,13 @@ export interface IngestionTelemetry {
   qualifiedLeadsCount: number;
   seekingDiscardedCount: number;
   awaitingAnalysisCount: number;
+  /** Labelled demo fixtures (not included in the counts above). */
+  demoPostsCount: number;
+  /** The same 24h measures over labelled demo fixtures only (reported separately by the API). */
+  demoScanned24h?: number;
+  demoQualifiedLeadsCount?: number;
+  demoSeekingDiscardedCount?: number;
+  demoAwaitingAnalysisCount?: number;
   channelsMonitored: string[];
   /** Null: latency is not measured. */
   avgLatencyMs: number | null;

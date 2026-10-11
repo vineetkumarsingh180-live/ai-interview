@@ -91,7 +91,7 @@ export const LeadRadarView: React.FC = () => {
             provider to be configured on the server.
           </p>
           <button type="button" onClick={() => setIsSimulateModalOpen(true)} className="btn btn-primary">
-            + Import raw post
+            + Add a post
           </button>
         </div>
       ) : (

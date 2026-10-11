@@ -29,11 +29,16 @@ export const ChannelFilterBar: React.FC<ChannelFilterBarProps> = ({
   onRefresh,
   isLoading,
 }) => {
+  // Genuine counts plus labelled demo counts (reported separately by the API); the note says so.
+  const total = (genuine?: number, demo?: number) => (telemetry ? ((genuine ?? 0) + (demo ?? 0)).toLocaleString() : NOT_AVAILABLE);
+  const demoShown =
+    (telemetry?.demoScanned24h ?? 0) + (telemetry?.demoQualifiedLeadsCount ?? 0) + (telemetry?.demoSeekingDiscardedCount ?? 0) +
+    (telemetry?.demoAwaitingAnalysisCount ?? 0);
   const metrics = [
-    { label: 'Scanned (24h)', value: telemetry ? telemetry.totalScanned24h.toLocaleString() : NOT_AVAILABLE },
-    { label: 'Qualified leads', value: telemetry ? telemetry.qualifiedLeadsCount.toLocaleString() : NOT_AVAILABLE },
-    { label: 'Seekers filtered', value: telemetry ? telemetry.seekingDiscardedCount.toLocaleString() : NOT_AVAILABLE },
-    { label: 'Awaiting analysis', value: telemetry ? telemetry.awaitingAnalysisCount.toLocaleString() : NOT_AVAILABLE },
+    { label: 'Scanned (24h)', value: total(telemetry?.totalScanned24h, telemetry?.demoScanned24h) },
+    { label: 'Qualified leads', value: total(telemetry?.qualifiedLeadsCount, telemetry?.demoQualifiedLeadsCount) },
+    { label: 'Seekers filtered', value: total(telemetry?.seekingDiscardedCount, telemetry?.demoSeekingDiscardedCount) },
+    { label: 'Awaiting analysis', value: total(telemetry?.awaitingAnalysisCount, telemetry?.demoAwaitingAnalysisCount) },
   ];
 
   return (
@@ -64,7 +69,7 @@ export const ChannelFilterBar: React.FC<ChannelFilterBarProps> = ({
             </button>
             <button id="ingest-post-trigger-btn" type="button" onClick={onOpenIngestModal} className="btn btn-primary">
               <Plus className="h-4 w-4" />
-              <span>Simulate raw post</span>
+              <span>Add a post</span>
             </button>
           </div>
         </div>
@@ -77,7 +82,14 @@ export const ChannelFilterBar: React.FC<ChannelFilterBarProps> = ({
             </div>
           ))}
         </dl>
-        <p className="text-xs text-ink-soft">Counts are computed from the posts stored in the database over the last 24 hours.</p>
+        <p className="text-xs text-ink-soft">
+          Counts are computed from the posts stored in the database over the last 24 hours
+          {telemetry && demoShown > 0
+            ? `, including ${telemetry.demoScanned24h ?? 0} labelled demo post${telemetry.demoScanned24h === 1 ? '' : 's'} (fixtures, not real posts).`
+            : telemetry && telemetry.demoPostsCount > 0
+            ? `; ${telemetry.demoPostsCount} labelled demo post${telemetry.demoPostsCount === 1 ? ' is' : 's are'} older than that window.`
+            : '.'}
+        </p>
       </section>
 
       <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter by source">

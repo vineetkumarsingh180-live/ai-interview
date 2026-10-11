@@ -33,6 +33,12 @@ const cases: Array<[string, Record<string, string>, string]> = [
   ['shared importing a module', { 'src/shared/bad.ts': "import { LeadRadarView } from '@modules/job-lead-radar';\nexport const x = LeadRadarView;\n" }, 'shared-must-be-independent'],
   ['business logic in shared', { 'src/shared/bad.ts': 'export const scoreCandidate = (n: number) => n * 2;\n' }, 'no-business-logic-in-shared'],
   ['direct fetch in a module', { 'src/modules/leaderboard/bad.ts': "export const load = () => fetch('/api/v1/x');\n" }, 'http-via-shared-client'],
+  ['importing backend code', { 'src/shared/bad.ts': "import x from '../../../backend/app/main';\nexport const y = x;\n" }, 'frontend-must-not-import-server-code'],
+  ['importing AIService', { 'src/modules/leaderboard/bad.ts': "import x from 'aiservice/providers';\nexport const y = x;\n" }, 'frontend-must-not-import-server-code'],
+  ['importing an AI SDK', { 'src/modules/leaderboard/bad.ts': "import { GoogleGenAI } from '@google/genai';\nexport const y = GoogleGenAI;\n" }, 'frontend-must-not-use-ai-or-server-sdk'],
+  ['importing a Node server framework', { 'src/shared/bad.ts': "import express from 'express';\nexport const y = express;\n" }, 'frontend-must-not-use-ai-or-server-sdk'],
+  ['provider key in frontend', { 'src/shared/bad.ts': "export const key = import.meta.env.VITE_GEMINI_API_KEY;\n" }, 'no-secrets-or-provider-endpoints-in-frontend'],
+  ['provider endpoint in frontend', { 'src/shared/bad.ts': "export const u = 'https://generativelanguage.googleapis.com/v1beta/models';\n" }, 'no-secrets-or-provider-endpoints-in-frontend'],
   ['circular import', { 'src/modules/leaderboard/a.ts': "import { b } from './b';\nexport const a = b;\n", 'src/modules/leaderboard/b.ts': "import { a } from './a';\nexport const b = a;\n" }, 'no-circular-imports'],
 ];
 for (const [name, files, rule] of cases) {

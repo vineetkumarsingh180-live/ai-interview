@@ -73,5 +73,13 @@ class CandidateRepoDetailResponse(ApiModel):
     status: str = Field(description="awaiting_analysis | analyzing | analyzed | failed")
     is_demo: bool = Field(default=False, description="True for clearly labelled development fixtures")
     submitted_at: datetime
+    # provenance
+    source_type: str = Field(default="api_manual", description="api_manual | github_api | demo_fixture")
+    verification_status: str = Field(
+        default="unverified",
+        description="unverified | github_metadata (facts fetched from GitHub, not analysed) | demo_fixture",
+    )
+    github_metadata: Optional[Dict[str, Any]] = Field(default=None, description="Exactly what GitHub returned")
+    metadata_fetched_at: Optional[datetime] = None
     benchmark: Optional[BenchmarkSuiteResponse] = None
     evaluation: Optional[CodeEvaluationResponse] = None

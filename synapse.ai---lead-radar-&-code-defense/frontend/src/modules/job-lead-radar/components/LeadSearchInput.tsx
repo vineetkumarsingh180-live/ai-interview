@@ -18,7 +18,7 @@ export const LeadSearchInput: React.FC<LeadSearchInputProps> = ({ value, onChang
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && onSearchSubmit?.()}
-        placeholder="Filter title, company or stack"
+        placeholder="Filter leads"
         aria-label="Filter leads by title, company or tech stack"
         className="field pl-10 pr-10 [&::-webkit-search-cancel-button]:hidden"
       />

@@ -14,6 +14,7 @@ import app.modules.job_lead_radar
 import app.modules.code_verifier
 import app.modules.voice_defense
 import app.modules.leaderboard
+import app.shared.ingestion_log  # noqa: F401  (ingestion_runs table)
 
 config = context.config
 

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aiservice"
+version = "0.1.0"
+description = "Synapse.AI internal AI/ML package: provider layer, prompts and evidence-checked intelligence capabilities. Not a server."
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.28,<1",
+    "pydantic>=2.10,<3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "anyio>=4"]
+
+[tool.setuptools.packages.find]
+include = ["aiservice*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

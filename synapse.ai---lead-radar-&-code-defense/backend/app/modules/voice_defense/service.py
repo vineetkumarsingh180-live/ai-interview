@@ -13,9 +13,8 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.errors import NotFound
-from app.shared.gemini import extract_text, generate_content, is_configured
 
-from .interfaces import LeaderboardPublisher, RepositoryLookup
+from .interfaces import Interviewer, LeaderboardPublisher, RepositoryLookup
 from .models import VoiceSession
 from .schemas import VoiceSessionInitRequest, VoiceTurnInput, VoiceTurnOutput
 
@@ -28,13 +27,6 @@ OPENING_QUESTION = (
     "Please walk me through the project you submitted: what problem it solves, how it is "
     "structured, and which design decisions you would defend."
 )
-
-_INTERVIEWER_INSTRUCTION = (
-    "You are a technical interviewer. Based only on the dialogue so far, ask ONE concise follow-up "
-    "question (max 2 sentences) that probes the candidate's last answer. Do not evaluate, score, "
-    "or praise. Do not mention facts the candidate has not stated."
-)
-
 
 def _clock() -> str:
     return datetime.utcnow().strftime("%M:%S")
@@ -70,6 +62,7 @@ class VoiceInterviewService:
         payload: VoiceTurnInput,
         leaderboard: LeaderboardPublisher,
         repositories: RepositoryLookup,
+        interviewer: Interviewer,
     ) -> VoiceTurnOutput:
         session = await db.get(VoiceSession, payload.session_id)
         if not session:
@@ -78,18 +71,10 @@ class VoiceInterviewService:
         turns = list(session.transcript_turns or [])
         turns.append({"speaker": "candidate", "text": payload.candidate_speech_text, "timestamp": _clock()})
 
-        reply: Optional[str] = None
-        if is_configured():
-            history = "\n".join(f"{t['speaker']}: {t['text']}" for t in turns[-6:])
-            body = {
-                "contents": [{"parts": [{"text": f"Dialogue:\n{history}\n\nNext interviewer question:"}]}],
-                "systemInstruction": {"parts": [{"text": _INTERVIEWER_INSTRUCTION}]},
-                "generationConfig": {"temperature": 0.4, "maxOutputTokens": 160},
-            }
-            try:
-                reply = (extract_text(await generate_content(body, timeout=15.0)) or "").strip() or None
-            except Exception as exc:
-                logger.error("Interviewer generation failed: %s", type(exc).__name__)
+        # The follow-up comes only from the interviewer port (AIService); when it is unavailable
+        # the answer is still stored and the turn is reported as unavailable. No canned reply.
+        followed = await interviewer.follow_up([{"speaker": t["speaker"], "text": t["text"]} for t in turns])
+        reply: Optional[str] = followed.question if followed.status == "generated" else None
 
         if reply:
             turns.append({"speaker": "ai_interviewer", "text": reply, "timestamp": _clock()})
