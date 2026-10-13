@@ -74,3 +74,17 @@ def get_lead_analyzer() -> LeadAnalyzer:
 
 def get_outreach_drafter() -> OutreachDrafter:
     raise RuntimeError("OutreachDrafter is not wired; see app/core/wiring.py")
+
+
+class JobSearchChatbot(Protocol):
+    async def chat_search_jobs(
+        self,
+        query: str,
+        available_jobs: List[Dict[str, Any]],
+        candidate_context: Optional[str] = None,
+    ) -> Any: ...
+
+
+def get_job_search_chatbot() -> JobSearchChatbot:
+    raise RuntimeError("JobSearchChatbot is not wired; see app/core/wiring.py")
+

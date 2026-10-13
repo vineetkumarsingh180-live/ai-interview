@@ -19,4 +19,5 @@ def get_provider() -> GeminiProvider:
 
 
 def is_configured() -> bool:
-    return get_provider().is_configured()
+    return bool(settings.GEMINI_API_KEY and settings.GEMINI_MODEL and settings.GEMINI_MODEL.strip())
+

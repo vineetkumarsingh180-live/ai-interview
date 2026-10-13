@@ -22,6 +22,8 @@ from .ai_adapters import (
     AIServiceOutreachDrafter,
     AIServiceRepositoryAnalyzer,
 )
+from app.services.gemini_service import get_gemini_service
+
 
 
 def wire_dependencies(app: FastAPI) -> None:
@@ -36,5 +38,7 @@ def wire_dependencies(app: FastAPI) -> None:
     repository_analyzer = AIServiceRepositoryAnalyzer(get_provider)
     app.dependency_overrides[job_lead_radar.get_lead_analyzer] = lambda: lead_analyzer
     app.dependency_overrides[job_lead_radar.get_outreach_drafter] = lambda: outreach
+    app.dependency_overrides[job_lead_radar.get_job_search_chatbot] = lambda: get_gemini_service()
     app.dependency_overrides[voice_defense.get_interviewer] = lambda: interviewer
     app.dependency_overrides[code_verifier.get_repository_analyzer] = lambda: repository_analyzer
+

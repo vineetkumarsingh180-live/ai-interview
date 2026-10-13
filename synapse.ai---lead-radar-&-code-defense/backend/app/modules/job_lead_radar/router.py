@@ -11,11 +11,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.shared.database import get_db
 
 from . import repository
-from .interfaces import LeadAnalyzer, OutreachDrafter, get_lead_analyzer, get_outreach_drafter
+from .interfaces import (
+    JobSearchChatbot,
+    LeadAnalyzer,
+    OutreachDrafter,
+    get_job_search_chatbot,
+    get_lead_analyzer,
+    get_outreach_drafter,
+)
 from .schemas import (
     IngestionTelemetryResponse,
     IngestOutcome,
     JobLeadResponse,
+    LeadChatRequest,
+    LeadChatResponse,
     LeadSearchHit,
     LeadSearchQuery,
     OutreachDraftRequest,
@@ -23,7 +32,7 @@ from .schemas import (
     ParsedLeadExtraction,
     RawPostCreate,
 )
-from .service import AI_UNAVAILABLE, OutreachService, SocialIngestionService
+from .service import AI_UNAVAILABLE, ChatService, OutreachService, SocialIngestionService
 from app.shared.errors import ServiceUnavailable
 
 ingestion_router = APIRouter(prefix="/leads/ingest", tags=["Job Lead Radar"])
@@ -114,6 +123,20 @@ async def generate_outreach(
 )
 async def search_leads(query: LeadSearchQuery, db: AsyncSession = Depends(get_db)):
     return await OutreachService.search_leads(db=db, query_text=query.query_text, top_k=query.top_k)
+
+
+@outreach_router.post(
+    "/chat",
+    response_model=LeadChatResponse,
+    summary="Interactive AI chatbot for job searching powered by Gemini",
+)
+async def chat_with_lead_radar(
+    request: LeadChatRequest,
+    db: AsyncSession = Depends(get_db),
+    chatbot: JobSearchChatbot = Depends(get_job_search_chatbot),
+):
+    return await ChatService.chat_search(db=db, request=request, chatbot=chatbot)
+
 
 
 @outreach_router.get(

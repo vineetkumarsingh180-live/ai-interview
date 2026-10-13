@@ -1,6 +1,6 @@
 // HTTP client for the Job Lead Radar module's endpoints (see the backend OpenAPI contract).
 import { requestJson } from '@shared/api/client';
-import type { IngestionTelemetry, IngestOutcome, JobLead, OutreachDraft } from './types';
+import type { IngestionTelemetry, IngestOutcome, JobLead, OutreachDraft, LeadChatResponse } from './types';
 
 export function fetchLeads(params: { platform?: string; minScore?: number }): Promise<JobLead[]> {
   const query = new URLSearchParams();
@@ -56,3 +56,18 @@ export function generateOutreachDraft(input: {
     },
   });
 }
+
+export function chatSearchLeads(payload: {
+  message: string;
+  candidateContext?: string;
+}): Promise<LeadChatResponse> {
+  return requestJson<LeadChatResponse>('/api/v1/leads/chat', {
+    method: 'POST',
+    errorMessage: 'Failed to search leads with AI chatbot',
+    body: {
+      message: payload.message,
+      candidateContext: payload.candidateContext?.trim() || undefined,
+    },
+  });
+}
+

@@ -21,9 +21,9 @@ class Settings(BaseSettings):
     # Never point this at another project's database.
     DATABASE_URL: str = "postgresql+asyncpg://synapse_app@localhost:5432/synapse_dev"
 
-    # Gemini (server-side only; the browser never sees the key). Empty = AI features unavailable.
+    # Gemini (server-side only; the browser never sees the key). Configured via .env only.
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_MODEL: str = ""
 
     # GitHub REST API (optional token raises the rate limit; metadata only, no code is ever fetched).
     GITHUB_TOKEN: str = ""

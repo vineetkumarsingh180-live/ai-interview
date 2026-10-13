@@ -1,5 +1,5 @@
 import React from 'react';
-import { Radio, RefreshCw, Plus, Twitter, Linkedin, MessageSquare, Send } from 'lucide-react';
+import { Radio, RefreshCw, Plus, Twitter, Linkedin, MessageSquare, Send, Sparkles } from 'lucide-react';
 import { IngestionTelemetry } from '../types';
 
 interface ChannelFilterBarProps {
@@ -9,6 +9,8 @@ interface ChannelFilterBarProps {
   onOpenIngestModal: () => void;
   onRefresh: () => void;
   isLoading: boolean;
+  activeView?: 'feed' | 'chatbot';
+  onSelectView?: (view: 'feed' | 'chatbot') => void;
 }
 
 const CHANNELS = [
@@ -28,6 +30,8 @@ export const ChannelFilterBar: React.FC<ChannelFilterBarProps> = ({
   onOpenIngestModal,
   onRefresh,
   isLoading,
+  activeView = 'feed',
+  onSelectView,
 }) => {
   // Genuine counts plus labelled demo counts (reported separately by the API); the note says so.
   const total = (genuine?: number, demo?: number) => (telemetry ? ((genuine ?? 0) + (demo ?? 0)).toLocaleString() : NOT_AVAILABLE);
@@ -67,6 +71,16 @@ export const ChannelFilterBar: React.FC<ChannelFilterBarProps> = ({
             >
               <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             </button>
+            <button
+              id="chatbot-toggle-btn"
+              type="button"
+              onClick={() => onSelectView?.(activeView === 'chatbot' ? 'feed' : 'chatbot')}
+              className={`btn ${activeView === 'chatbot' ? 'btn-primary' : 'btn-secondary'}`}
+              title="AI Job Search Chatbot"
+            >
+              <Sparkles className="h-4 w-4 text-warm" />
+              <span>{activeView === 'chatbot' ? 'Close Chatbot' : 'AI Chatbot'}</span>
+            </button>
             <button id="ingest-post-trigger-btn" type="button" onClick={onOpenIngestModal} className="btn btn-primary">
               <Plus className="h-4 w-4" />
               <span>Add a post</span>
@@ -92,25 +106,53 @@ export const ChannelFilterBar: React.FC<ChannelFilterBarProps> = ({
         </p>
       </section>
 
-      <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter by source">
-        {CHANNELS.map((ch) => {
-          const Icon = ch.icon;
-          const isActive = selectedChannel === ch.id;
-          return (
-            <button
-              key={ch.id}
-              id={`channel-tab-${ch.id}`}
-              type="button"
-              aria-pressed={isActive}
-              onClick={() => onSelectChannel(ch.id)}
-              className="chip"
-            >
-              <Icon className="h-3.5 w-3.5" />
-              <span>{ch.label}</span>
-            </button>
-          );
-        })}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2" role="tablist" aria-label="View mode">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeView === 'feed'}
+            onClick={() => onSelectView?.('feed')}
+            className={`chip font-semibold ${activeView === 'feed' ? 'border-mocha bg-canvas-alt text-ink' : 'text-ink-soft'}`}
+          >
+            <Radio className="h-3.5 w-3.5" />
+            <span>Lead Stream</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeView === 'chatbot'}
+            onClick={() => onSelectView?.('chatbot')}
+            className={`chip font-semibold ${activeView === 'chatbot' ? 'border-warm bg-warm-tint text-warm-strong' : 'text-ink-soft'}`}
+          >
+            <Sparkles className="h-3.5 w-3.5 text-warm" />
+            <span>AI Job Chatbot</span>
+          </button>
+        </div>
+
+        {activeView === 'feed' && (
+          <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter by source">
+            {CHANNELS.map((ch) => {
+              const Icon = ch.icon;
+              const isActive = selectedChannel === ch.id;
+              return (
+                <button
+                  key={ch.id}
+                  id={`channel-tab-${ch.id}`}
+                  type="button"
+                  aria-pressed={isActive}
+                  onClick={() => onSelectChannel(ch.id)}
+                  className="chip"
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  <span>{ch.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
+
     </div>
   );
 };

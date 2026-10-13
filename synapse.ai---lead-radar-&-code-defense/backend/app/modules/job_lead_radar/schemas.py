@@ -140,3 +140,15 @@ class LeadSearchHit(ApiModel):
     lead: JobLeadResponse
     match_type: Literal["keyword"] = "keyword"
     similarity_score: Optional[float] = Field(default=None, description="Always null until embeddings exist")
+
+
+class LeadChatRequest(ApiModel):
+    message: str = Field(..., min_length=1, max_length=2000, description="User search query or question")
+    candidate_context: Optional[str] = Field(default=None, max_length=2000, description="Optional candidate background context")
+
+
+class LeadChatResponse(ApiModel):
+    reply: str
+    matched_leads: List[JobLeadResponse] = Field(default_factory=list)
+    suggestions: List[str] = Field(default_factory=list)
+
