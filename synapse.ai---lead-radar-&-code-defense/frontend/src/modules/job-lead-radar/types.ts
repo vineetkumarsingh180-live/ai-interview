@@ -90,3 +90,15 @@ export interface OutreachDraft {
   completionTokens?: number | null;
   createdAt: string;
 }
+
+export interface LeadChatRequest {
+  message: string;
+  candidateContext?: string | null;
+}
+
+export interface LeadChatResponse {
+  reply: string;
+  matchedLeads: JobLead[];
+  suggestions: string[];
+}
+

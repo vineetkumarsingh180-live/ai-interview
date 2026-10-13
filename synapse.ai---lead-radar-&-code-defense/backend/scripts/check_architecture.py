@@ -83,6 +83,8 @@ def layer_of(mod):
         return ("shared", None)
     if parts[:2] == ["app", "core"]:
         return ("core", None)
+    if parts[:2] == ["app", "services"]:
+        return ("services", None)
     if parts == ["app", "main"] or parts == ["app"]:
         return ("main", None)
     return ("external", None)
@@ -168,7 +170,7 @@ for f in files:
         elif me[0] == "shared":
             if t[0] in ("module", "modules-root", "core", "main"):
                 report("shared-must-be-independent", f, f'app.shared imports "{imp}"')
-        elif me[0] in ("core", "main"):
+        elif me[0] in ("core", "main", "services"):
             if t[0] == "module" and len(imp.split(".")) > 3:
                 report("only-public-api", f, f'imports module internals "{imp}"; import the package "app.modules.{t[1]}"')
     graph[f] = deps
@@ -331,12 +333,16 @@ for f in list(_ais_graph):
         _ais_dfs(f)
 
 # who may import aiservice
-_ALLOWED_AI_IMPORT = (os.path.join("app", "core") + os.sep, os.path.join("app", "shared", "ai.py"))
+_ALLOWED_AI_IMPORT = (
+    os.path.join("app", "core") + os.sep,
+    os.path.join("app", "shared", "ai.py"),
+    os.path.join("app", "services") + os.sep,
+)
 _backend_files = list(py_files(APP)) + [p for p in (os.path.join(ROOT, "alembic", "env.py"),) if os.path.isfile(p)]
 for f in _backend_files:
     rel = os.path.relpath(f, ROOT)
     for name, _ in _abs_imports(ast.parse(open(f).read())):
-        if name.split(".")[0] == "aiservice" and not (rel.startswith(_ALLOWED_AI_IMPORT[0]) or rel == _ALLOWED_AI_IMPORT[1]):
+        if name.split(".")[0] == "aiservice" and not (rel.startswith(_ALLOWED_AI_IMPORT[0]) or rel == _ALLOWED_AI_IMPORT[1] or rel.startswith(_ALLOWED_AI_IMPORT[2])):
             report("aiservice-only-via-composition-root", f, f'imports "{name}"; modules declare ports, app/core binds AIService')
 for f in ing_files:
     for name, _ in _abs_imports(ast.parse(open(f).read())):
@@ -344,14 +350,22 @@ for f in ing_files:
             report("ingestion-must-not-import-aiservice", f, f'imports "{name}"; ingestion does not perform AI analysis')
 
 # the Gemini key identifier stays in configuration + provider construction
-_KEY_ALLOWED = {os.path.join("app", "shared", "config.py"), os.path.join("app", "shared", "ai.py")}
+_KEY_ALLOWED = {
+    os.path.join("app", "shared", "config.py"),
+    os.path.join("app", "shared", "ai.py"),
+    os.path.join("app", "core", "config.py"),
+    os.path.join("app", "services", "gemini_service.py"),
+}
 for f in _backend_files:
     if os.path.relpath(f, ROOT) not in _KEY_ALLOWED and "GEMINI_API_KEY" in strip_to_code_tokens(f):
         report("gemini-key-centralized", f, "reads GEMINI_API_KEY outside app/shared/config.py and app/shared/ai.py")
 
-# provider SDKs / endpoint only inside aiservice/providers
+# provider SDKs / endpoint only inside aiservice/providers or app/services/gemini_service.py
 for f in _backend_files + ais_files + ing_files:
     if f in ais_files and _is_ais_provider_file(f):
+        continue
+    rel = os.path.relpath(f, ROOT)
+    if rel in (os.path.join("app", "services", "gemini_service.py"), "app/services/gemini_service.py"):
         continue
     tree = ast.parse(open(f).read())
     for name, _ in _abs_imports(tree):

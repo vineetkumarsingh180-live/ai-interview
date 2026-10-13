@@ -564,6 +564,87 @@
         }
       }
     },
+    "/api/v1/leads/chat": {
+      "post": {
+        "tags": [
+          "Job Lead Radar"
+        ],
+        "summary": "Interactive AI chatbot for job searching powered by Gemini",
+        "operationId": "chat_with_lead_radar_api_v1_leads_chat_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadChatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadChatResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/leads/outreach/history": {
       "get": {
         "tags": [
@@ -2027,6 +2108,62 @@
           "createdAt"
         ],
         "title": "JobLeadResponse"
+      },
+      "LeadChatRequest": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Message",
+            "description": "User search query or question"
+          },
+          "candidateContext": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidatecontext",
+            "description": "Optional candidate background context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "LeadChatRequest"
+      },
+      "LeadChatResponse": {
+        "properties": {
+          "reply": {
+            "type": "string",
+            "title": "Reply"
+          },
+          "matchedLeads": {
+            "items": {
+              "$ref": "#/components/schemas/JobLeadResponse"
+            },
+            "type": "array",
+            "title": "Matchedleads"
+          },
+          "suggestions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Suggestions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reply"
+        ],
+        "title": "LeadChatResponse"
       },
       "LeadSearchHit": {
         "properties": {

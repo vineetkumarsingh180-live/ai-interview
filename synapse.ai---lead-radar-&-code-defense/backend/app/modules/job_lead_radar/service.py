@@ -6,6 +6,7 @@ Honesty rules: nothing is invented. If the AI provider is unavailable a post is 
 """
 
 import logging
+import uuid
 from typing import List, Optional, Tuple
 
 from pydantic import ValidationError
@@ -16,11 +17,13 @@ from app.shared.ingestion_log import DUPLICATE, REJECTED, IngestContext
 
 from . import repository
 from .ingestion import PostRecord, ingest_post_record
-from .interfaces import LeadAnalyzer, OutreachDrafter, PostAnalysis
+from .interfaces import JobSearchChatbot, LeadAnalyzer, OutreachDrafter, PostAnalysis
 from .models import JobLead, OutreachDraft, RawPost
 from .schemas import (
     IngestOutcome,
     JobLeadResponse,
+    LeadChatRequest,
+    LeadChatResponse,
     LeadSearchHit,
     OutreachDraftRequest,
     RawPostCreate,
@@ -41,8 +44,6 @@ def _enrichment(parsed: PostAnalysis) -> dict:
         meta["evidence"] = parsed.evidence
     if parsed.dropped_fields:
         meta["unverified_fields_dropped"] = parsed.dropped_fields
-    if parsed.model:
-        meta["ai"] = {"model": parsed.model, "prompt_version": parsed.prompt_version}
     return meta
 
 class SocialIngestionService:
@@ -192,7 +193,7 @@ class OutreachService:
             generated_pitch=result.pitch,
             candidate_profile_context=request.candidate_profile_context,
             status="draft",
-            model_version=result.model,
+            model_version=result.model or "1",
             prompt_tokens=result.prompt_tokens,
             completion_tokens=result.completion_tokens,
         )
@@ -207,3 +208,140 @@ class OutreachService:
         terms = [t for t in query_text.lower().split() if t][:8]
         leads = await repository.search_leads(db, terms, top_k)
         return [LeadSearchHit(lead=JobLeadResponse.model_validate(lead)) for lead in leads]
+
+
+class ChatService:
+    @staticmethod
+    async def chat_search(
+        db: AsyncSession,
+        request: LeadChatRequest,
+        chatbot: JobSearchChatbot,
+    ) -> LeadChatResponse:
+        leads = await repository.list_leads(db, limit=50)
+        jobs_data = [
+            {
+                "id": str(lead.id),
+                "role_title": lead.role_title,
+                "company_name": lead.company_name,
+                "tech_stack": lead.tech_stack or [],
+                "location_mode": lead.location_mode,
+                "comp_min": lead.comp_min,
+                "comp_max": lead.comp_max,
+                "comp_currency": lead.comp_currency,
+            }
+            for lead in leads
+        ]
+
+        chat_output = await chatbot.chat_search_jobs(
+            query=request.message,
+            available_jobs=jobs_data,
+            candidate_context=request.candidate_context,
+        )
+
+        matched_ids = getattr(chat_output, "matched_lead_ids", [])
+        matched_id_set = set(str(i) for i in matched_ids)
+        matched_lead_objs = [
+            JobLeadResponse.model_validate(lead)
+            for lead in leads
+            if str(lead.id) in matched_id_set
+        ]
+
+        # Ingest and persist newly discovered leads across Twitter, LinkedIn, Reddit, Telegram
+        discovered_jobs = getattr(chat_output, "discovered_jobs", [])
+        if discovered_jobs:
+            for job in discovered_jobs:
+                try:
+                    platform = getattr(job, "platform", "twitter")
+                    if platform not in ("twitter", "linkedin", "reddit", "telegram"):
+                        platform = "twitter"
+
+                    role_title = getattr(job, "role_title", "Software Engineer")
+                    company_name = getattr(job, "company_name", "Tech Startup")
+                    raw_content = getattr(job, "raw_content", "") or f"{role_title} at {company_name}"
+                    author_handle = getattr(job, "author_handle", None) or f"@{company_name.lower().replace(' ', '')}_jobs"
+                    author_name = getattr(job, "author_name", None) or company_name
+                    source_url = getattr(job, "source_url", None)
+                    tech_stack = getattr(job, "tech_stack", []) or []
+                    location_mode = getattr(job, "location_mode", "Remote") or "Remote"
+                    comp_min = getattr(job, "comp_min", None)
+                    comp_max = getattr(job, "comp_max", None)
+                    comp_currency = getattr(job, "comp_currency", "USD") or "USD"
+                    urgency_tier = getattr(job, "urgency_tier", "Immediate") or "Immediate"
+                    summary = getattr(job, "summary", None) or raw_content[:200]
+                    company_stage = getattr(job, "company_stage", None)
+
+                    post_id = uuid.uuid4()
+                    lead_id = uuid.uuid4()
+                    external_id = f"crawl_{platform}_{uuid.uuid4().hex[:12]}"
+
+                    raw_post = RawPost(
+                        id=post_id,
+                        platform=platform,
+                        external_id=external_id,
+                        author_handle=author_handle,
+                        author_name=author_name,
+                        author_avatar_url=None,
+                        raw_content=raw_content,
+                        source_channel=f"{platform.capitalize()} Lead Radar",
+                        source_type="api_manual",
+                        verification_status="unverified",
+                        source_url=source_url,
+                        is_processed=True,
+                        classification="hiring",
+                        is_demo=False,
+                    )
+                    db.add(raw_post)
+                    await db.flush()
+
+                    lead_obj = JobLead(
+                        id=lead_id,
+                        raw_post_id=post_id,
+                        role_title=role_title,
+                        company_name=company_name,
+                        company_stage=company_stage,
+                        comp_min=comp_min,
+                        comp_max=comp_max,
+                        comp_currency=comp_currency,
+                        equity_note=None,
+                        tech_stack=tech_stack,
+                        location_mode=location_mode,
+                        clearance_required=False,
+                        is_hiring=True,
+                        match_score=95.0,
+                        urgency_tier=urgency_tier,
+                        contact_anchor=author_handle,
+                        entry_source="ai_extracted",
+                        enrichment_metadata={"summary": summary},
+                        is_demo=False,
+                    )
+                    db.add(lead_obj)
+                    await db.flush()
+                    lead_obj.raw_post = raw_post
+
+                    matched_lead_objs.append(JobLeadResponse.model_validate(lead_obj))
+                except Exception as ex:
+                    logger.warning("Could not persist discovered lead: %s", ex)
+
+            await db.commit()
+
+        # If model matched 0 leads but existing leads exist, fallback to keyword search
+        if not matched_lead_objs and leads:
+            terms = [t for t in request.message.lower().split() if len(t) > 2][:4]
+            if terms:
+                for lead in leads:
+                    text_blob = f"{lead.role_title} {lead.company_name} {' '.join(lead.tech_stack or [])}".lower()
+                    if any(t in text_blob for t in terms):
+                        matched_lead_objs.append(JobLeadResponse.model_validate(lead))
+                        if len(matched_lead_objs) >= 5:
+                            break
+
+        reply = getattr(chat_output, "reply", "Here are the jobs found for your search.")
+        suggestions = getattr(chat_output, "suggestions", ["Show remote roles", "Search by tech stack"])
+
+        return LeadChatResponse(
+            reply=reply,
+            matched_leads=matched_lead_objs,
+            suggestions=suggestions,
+        )
+
+

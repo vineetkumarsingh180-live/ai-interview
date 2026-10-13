@@ -25,6 +25,8 @@ target_metadata = Base.metadata
 
 def run_migrations_offline() -> None:
     url = settings.DATABASE_URL
+    if not url.startswith("postgres"):
+        url = "postgresql+asyncpg://synapse_app@localhost:5432/synapse_dev"
     context.configure(
         url=url,
         target_metadata=target_metadata,

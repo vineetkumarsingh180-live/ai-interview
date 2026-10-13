@@ -41,6 +41,7 @@ def test_expected_routes_registered():
         ("POST", "/api/v1/leads/ingest/trigger"), ("POST", "/api/v1/leads/ingest/parse-text"),
         ("GET", "/api/v1/leads/ingest/recent"), ("GET", "/api/v1/leads/ingest/telemetry"),
         ("POST", "/api/v1/leads/outreach/generate"), ("POST", "/api/v1/leads/search"),
+        ("POST", "/api/v1/leads/chat"),
         ("GET", "/api/v1/leads/outreach/history"),
         ("POST", "/api/v1/assessment/repo/submit"), ("GET", "/api/v1/assessment/repo/recent"),
         ("GET", "/api/v1/assessment/repo/{repo_id}"),

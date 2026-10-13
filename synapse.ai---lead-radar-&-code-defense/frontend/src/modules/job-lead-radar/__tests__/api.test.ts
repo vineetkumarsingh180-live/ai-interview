@@ -1,6 +1,6 @@
 import { test, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchLeads, ingestPost, generateOutreachDraft } from '../api';
+import { fetchLeads, ingestPost, generateOutreachDraft, chatSearchLeads } from '../api';
 
 const realFetch = globalThis.fetch;
 let last: { url: string; init?: RequestInit } | null = null;
@@ -35,3 +35,12 @@ test('generateOutreachDraft sends leadId and omits an empty background', async (
   const body = JSON.parse(String(last?.init?.body));
   assert.deepEqual(body, { leadId: '11111111-1111-1111-1111-111111111111', tone: 'Executive' });
 });
+
+test('chatSearchLeads sends message and candidateContext in camelCase contract body', async () => {
+  await chatSearchLeads({ message: 'looking for python jobs', candidateContext: '5 years fastAPI' });
+  assert.equal(last?.url, '/api/v1/leads/chat');
+  const body = JSON.parse(String(last?.init?.body));
+  assert.equal(body.message, 'looking for python jobs');
+  assert.equal(body.candidateContext, '5 years fastAPI');
+});
+

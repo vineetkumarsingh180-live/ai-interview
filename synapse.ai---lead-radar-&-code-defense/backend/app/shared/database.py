@@ -15,15 +15,21 @@ from sqlalchemy import text
 from app.shared.config import settings
 
 # Initialize Async Engine with robust pooling and pre-ping
-engine: AsyncEngine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=False,
-    future=True,
-    pool_size=5,
-    max_overflow=5,
-    pool_pre_ping=True,
-    pool_recycle=3600,
-)
+_db_url = settings.DATABASE_URL
+_engine_kwargs = {"echo": False, "future": True}
+
+if _db_url.startswith("sqlite"):
+    if not _db_url.startswith("sqlite+aiosqlite"):
+        _db_url = _db_url.replace("sqlite://", "sqlite+aiosqlite://", 1)
+else:
+    _engine_kwargs.update({
+        "pool_size": 5,
+        "max_overflow": 5,
+        "pool_pre_ping": True,
+        "pool_recycle": 3600,
+    })
+
+engine: AsyncEngine = create_async_engine(_db_url, **_engine_kwargs)
 
 # Async sessionmaker producing non-blocking AsyncSession instances
 AsyncSessionLocal = async_sessionmaker(
