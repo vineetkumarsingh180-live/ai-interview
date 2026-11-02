@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.shared.database import get_db
 from app.shared.errors import NotFound
 
-from .schemas import CandidateRepoDetailResponse, RepoSubmissionRequest
+from .schemas import CandidateRepoDetailResponse, RepoDeleteResponse, RepoSubmissionRequest
 from .service import CodeVerifierService
 
 router = APIRouter(prefix="/assessment/repo", tags=["Code Verifier"])
@@ -46,3 +46,16 @@ async def get_repo_detail(repo_id: UUID, db: AsyncSession = Depends(get_db)):
     if not repo:
         raise NotFound("Candidate repository not found.")
     return repo
+
+
+@router.delete(
+    "/{repo_id}",
+    response_model=RepoDeleteResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Delete or unsubmit a candidate repository",
+)
+async def delete_repo(repo_id: UUID, db: AsyncSession = Depends(get_db)):
+    deleted = await CodeVerifierService.delete_repository(db=db, repo_id=repo_id)
+    if not deleted:
+        raise NotFound("Candidate repository not found.")
+    return RepoDeleteResponse(success=True, repo_id=repo_id)

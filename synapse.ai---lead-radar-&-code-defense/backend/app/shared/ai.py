@@ -18,6 +18,16 @@ def get_provider() -> GeminiProvider:
     return GeminiProvider(api_key=settings.GEMINI_API_KEY, model=settings.GEMINI_MODEL)
 
 
+def get_provider_1() -> GeminiProvider:
+    api_key = (settings.GEMINI_API_KEY_1 or "").strip() or (settings.GEMINI_API_KEY or "").strip()
+    return GeminiProvider(api_key=api_key, model=settings.GEMINI_MODEL)
+
+
 def is_configured() -> bool:
     return bool(settings.GEMINI_API_KEY and settings.GEMINI_MODEL and settings.GEMINI_MODEL.strip())
+
+
+def is_configured_1() -> bool:
+    key = (settings.GEMINI_API_KEY_1 or "").strip() or (settings.GEMINI_API_KEY or "").strip()
+    return bool(key and settings.GEMINI_MODEL and settings.GEMINI_MODEL.strip())
 

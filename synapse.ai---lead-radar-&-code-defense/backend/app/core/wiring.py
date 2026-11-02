@@ -14,7 +14,7 @@ other and never import the AI package:
 from fastapi import FastAPI
 
 from app.modules import code_verifier, job_lead_radar, leaderboard, voice_defense
-from app.shared.ai import get_provider
+from app.shared.ai import get_provider, get_provider_1
 
 from .ai_adapters import (
     AIServiceInterviewer,
@@ -34,7 +34,7 @@ def wire_dependencies(app: FastAPI) -> None:
 
     lead_analyzer = AIServiceLeadAnalyzer(get_provider)
     outreach = AIServiceOutreachDrafter(get_provider)
-    interviewer = AIServiceInterviewer(get_provider)
+    interviewer = AIServiceInterviewer(get_provider_1)
     repository_analyzer = AIServiceRepositoryAnalyzer(get_provider)
     app.dependency_overrides[job_lead_radar.get_lead_analyzer] = lambda: lead_analyzer
     app.dependency_overrides[job_lead_radar.get_outreach_drafter] = lambda: outreach

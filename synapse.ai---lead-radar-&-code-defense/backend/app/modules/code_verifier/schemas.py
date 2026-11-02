@@ -83,3 +83,8 @@ class CandidateRepoDetailResponse(ApiModel):
     metadata_fetched_at: Optional[datetime] = None
     benchmark: Optional[BenchmarkSuiteResponse] = None
     evaluation: Optional[CodeEvaluationResponse] = None
+
+
+class RepoDeleteResponse(ApiModel):
+    success: bool = True
+    repo_id: UUID

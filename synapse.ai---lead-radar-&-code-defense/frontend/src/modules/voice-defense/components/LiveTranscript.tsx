@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import { Bot, User, Send, Info, AlertCircle } from 'lucide-react';
-import { TranscriptTurn } from '../types';
+import { Bot, User, Send, Info, AlertCircle, Award } from 'lucide-react';
+import type { TranscriptTurn, VoiceCompleteResult } from '../types';
 
 interface LiveTranscriptProps {
   transcript: TranscriptTurn[];
@@ -13,6 +13,11 @@ interface LiveTranscriptProps {
   hasAnswered: boolean;
   error: string | null;
   notice: string | null;
+  interviewStage?: string;
+  evaluationResult?: VoiceCompleteResult | null;
+  onCompleteSession?: () => void;
+  isCompleting?: boolean;
+  onOpenScorecard?: () => void;
 }
 
 export const LiveTranscript: React.FC<LiveTranscriptProps> = ({
@@ -26,6 +31,11 @@ export const LiveTranscript: React.FC<LiveTranscriptProps> = ({
   hasAnswered,
   error,
   notice,
+  interviewStage,
+  evaluationResult,
+  onCompleteSession,
+  isCompleting,
+  onOpenScorecard,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -51,12 +61,56 @@ export const LiveTranscript: React.FC<LiveTranscriptProps> = ({
       {/* Header: neutral status. No hire/no-hire label is ever shown. */}
       <div className="flex flex-wrap items-start justify-between gap-2 border-b border-line pb-3">
         <div className="min-w-0">
-          <h3 className="text-base font-bold text-ink">Interview transcript</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-base font-bold text-ink">Interview transcript</h3>
+            {isSessionActive && (
+              <span className="badge badge-neutral text-[11px]">
+                {interviewStage === 'intro'
+                  ? 'Stage 1: Intro'
+                  : interviewStage === 'skills'
+                  ? 'Stage 2: Skills'
+                  : interviewStage === 'project_defense'
+                  ? 'Stage 3: Repo Architecture'
+                  : interviewStage === 'project_deep_dive'
+                  ? 'Stage 4: Deep Dive'
+                  : interviewStage === 'completed'
+                  ? 'Completed'
+                  : 'Active'}
+              </span>
+            )}
+          </div>
           <p className="text-sm text-ink-soft">Turn-based: speak or type your answer, then submit.</p>
         </div>
-        <span className={`badge ${hasAnswered ? 'badge-warm' : 'badge-neutral'}`}>
-          {hasAnswered ? 'Needs human review' : 'Not scored'}
-        </span>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {evaluationResult && onOpenScorecard ? (
+            <button
+              type="button"
+              onClick={onOpenScorecard}
+              className="btn btn-primary min-h-7 py-1 px-2.5 text-xs font-bold inline-flex items-center gap-1.5 shadow-sm"
+            >
+              <Award className="h-3.5 w-3.5" />
+              <span>Score: {evaluationResult.overallScore} / 10</span>
+            </button>
+          ) : isSessionActive && hasAnswered && onCompleteSession ? (
+            <button
+              type="button"
+              onClick={onCompleteSession}
+              disabled={isCompleting || isSubmitting}
+              className="btn btn-secondary min-h-7 py-1 px-2.5 text-xs font-semibold"
+            >
+              {isCompleting ? 'Evaluating…' : 'Complete & Score'}
+            </button>
+          ) : null}
+
+          <span className={`badge ${hasAnswered ? 'badge-warm' : 'badge-neutral'}`}>
+            {evaluationResult
+              ? `Score: ${evaluationResult.overallScore}/10`
+              : hasAnswered
+              ? 'Needs human review'
+              : 'Not scored'}
+          </span>
+        </div>
       </div>
 
       <p className="flex items-start gap-2 text-xs text-ink-alt">

@@ -1,6 +1,6 @@
 import { test, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { startVoiceSession, submitVoiceTurn } from '../api';
+import { startVoiceSession, submitVoiceTurn, completeVoiceSession } from '../api';
 
 const realFetch = globalThis.fetch;
 let last: { url: string; init?: RequestInit } | null = null;
@@ -24,4 +24,10 @@ test('submitVoiceTurn sends the server-issued session id and the answer', async 
   await submitVoiceTurn({ sessionId: 's-1', speechText: 'My answer' });
   assert.equal(last?.url, '/api/v1/assessment/voice/turn');
   assert.deepEqual(JSON.parse(String(last?.init?.body)), { sessionId: 's-1', candidateSpeechText: 'My answer' });
+});
+
+test('completeVoiceSession posts to /{sessionId}/complete', async () => {
+  await completeVoiceSession('session-uuid-123');
+  assert.equal(last?.url, '/api/v1/assessment/voice/session-uuid-123/complete');
+  assert.equal(last?.init?.method, 'POST');
 });

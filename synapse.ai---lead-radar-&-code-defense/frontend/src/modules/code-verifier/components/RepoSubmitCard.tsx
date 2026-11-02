@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GitBranch, Github, Play, Loader2, User, AlertCircle } from 'lucide-react';
+import { GitBranch, Github, Play, Loader2, User, AlertCircle, Trash2 } from 'lucide-react';
 import { CandidateRepo } from '../types';
 
 interface RepoSubmitCardProps {
@@ -13,7 +13,10 @@ interface RepoSubmitCardProps {
     targetRole?: string;
   }) => Promise<any>;
   isSubmitting: boolean;
+  onDeleteRepo?: (id: string) => Promise<any>;
+  isDeleting?: boolean;
   error?: string | null;
+  deleteError?: string | null;
   /** Error from loading the list (shown instead of an empty-state). */
   loadError?: string | null;
 }
@@ -24,7 +27,10 @@ export const RepoSubmitCard: React.FC<RepoSubmitCardProps> = ({
   onSelectRepo,
   onSubmitRepo,
   isSubmitting,
+  onDeleteRepo,
+  isDeleting,
   error,
+  deleteError,
   loadError,
 }) => {
   const [candidateName, setCandidateName] = useState('');
@@ -32,6 +38,8 @@ export const RepoSubmitCard: React.FC<RepoSubmitCardProps> = ({
   const [repoUrl, setRepoUrl] = useState('');
   const [targetRole, setTargetRole] = useState('');
   const [showSubmitForm, setShowSubmitForm] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,6 +167,11 @@ export const RepoSubmitCard: React.FC<RepoSubmitCardProps> = ({
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
             <span>{loadError}</span>
           </p>
+        ) : deleteError ? (
+          <p role="alert" className="flex items-start gap-2 rounded-lg border border-danger/30 bg-danger-tint p-2.5 text-sm text-danger">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{deleteError}</span>
+          </p>
         ) : repos.length === 0 ? (
           <p className="well p-4 text-sm text-ink-alt">No repositories submitted yet.</p>
         ) : (
@@ -171,36 +184,99 @@ export const RepoSubmitCard: React.FC<RepoSubmitCardProps> = ({
                 r.status === 'awaiting_analysis' ? 'Awaiting analysis' : r.status === 'failed' ? 'Analysis failed' : null;
               return (
                 <li key={r.id}>
-                  <button
+                  <div
                     id={`candidate-repo-item-${r.id}`}
-                    type="button"
+                    role="button"
+                    tabIndex={0}
                     aria-pressed={isSelected}
                     onClick={() => onSelectRepo(r.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onSelectRepo(r.id);
+                      }
+                    }}
                     className={`block w-full cursor-pointer rounded-xl border p-3 text-left transition-colors focus-visible:shadow-focus ${
                       isSelected
                         ? 'border-mocha bg-mocha-tint'
                         : 'border-line-strong bg-surface hover:bg-canvas-alt'
                     }`}
                   >
-                    <span className="flex items-start gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-line-strong bg-canvas-alt">
-                        {r.candidateAvatarUrl ? (
-                          <img src={r.candidateAvatarUrl} alt="" className="h-full w-full object-cover" />
-                        ) : (
-                          <User className="h-4 w-4 text-mocha" />
-                        )}
-                      </span>
-                      <span className="block min-w-0 flex-1">
-                        <span className="block break-words text-sm font-semibold text-ink">{r.candidateName}</span>
-                        <span className="block break-all text-xs text-ink-alt">@{r.candidateGithubHandle}</span>
-                        <span className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-mocha">
-                          <GitBranch className="h-3 w-3 shrink-0" />
-                          <span className="min-w-0 break-all">{r.repoName}</span>
-                          <span className="text-ink-alt">· {r.language ?? 'language unknown'}</span>
-                          {r.isDemo && <span className="badge badge-warm">Demo fixture</span>}
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="flex items-start gap-3 min-w-0 flex-1">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-line-strong bg-canvas-alt">
+                          {r.candidateAvatarUrl ? (
+                            <img src={r.candidateAvatarUrl} alt="" className="h-full w-full object-cover" />
+                          ) : (
+                            <User className="h-4 w-4 text-mocha" />
+                          )}
+                        </span>
+                        <span className="block min-w-0 flex-1">
+                          <span className="block break-words text-sm font-semibold text-ink">{r.candidateName}</span>
+                          <span className="block break-all text-xs text-ink-alt">@{r.candidateGithubHandle}</span>
+                          <span className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-mocha">
+                            <GitBranch className="h-3 w-3 shrink-0" />
+                            <span className="min-w-0 break-all">{r.repoName}</span>
+                            <span className="text-ink-alt">· {r.language ?? 'language unknown'}</span>
+                            {r.isDemo && <span className="badge badge-warm">Demo fixture</span>}
+                          </span>
                         </span>
                       </span>
-                    </span>
+
+                      {onDeleteRepo && (
+                        <button
+                          type="button"
+                          title="Unsubmit repository"
+                          aria-label={`Unsubmit repository ${r.repoName}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setConfirmDeleteId((prev) => (prev === r.id ? null : r.id));
+                          }}
+                          className="rounded-lg p-1.5 text-ink-alt hover:bg-danger-tint hover:text-danger focus-visible:shadow-focus transition-colors shrink-0"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+
+                    {confirmDeleteId === r.id && (
+                      <div
+                        className="mt-2.5 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-danger/30 bg-danger-tint p-2 text-xs text-danger"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <span className="font-medium">Unsubmit this repository?</span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            disabled={deletingId === r.id || isDeleting}
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              setDeletingId(r.id);
+                              try {
+                                await onDeleteRepo?.(r.id);
+                              } finally {
+                                setDeletingId(null);
+                                setConfirmDeleteId(null);
+                              }
+                            }}
+                            className="btn btn-danger min-h-6 py-0.5 px-2 text-xs font-bold"
+                          >
+                            {deletingId === r.id ? 'Deleting…' : 'Yes, unsubmit'}
+                          </button>
+                          <button
+                            type="button"
+                            disabled={deletingId === r.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setConfirmDeleteId(null);
+                            }}
+                            className="btn btn-secondary min-h-6 py-0.5 px-2 text-xs"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
                     <span className="mt-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 border-t border-line pt-2">
                       <span className="text-sm font-bold tabular-nums text-ink">
@@ -210,7 +286,7 @@ export const RepoSubmitCard: React.FC<RepoSubmitCardProps> = ({
                         {coverage != null ? `${coverage}% coverage` : 'Coverage not measured'}
                       </span>
                     </span>
-                  </button>
+                  </div>
                 </li>
               );
             })}

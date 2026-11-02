@@ -1,5 +1,5 @@
-import React from 'react';
-import { Github, ExternalLink } from 'lucide-react';
+import React, { useState } from 'react';
+import { Github, ExternalLink, Trash2, AlertTriangle } from 'lucide-react';
 import type { CandidateRepo } from '../types';
 
 const fmtDate = (iso?: string | null) => {
@@ -8,11 +8,18 @@ const fmtDate = (iso?: string | null) => {
   return Number.isNaN(d.getTime()) ? null : d.toLocaleString();
 };
 
+interface RepoFactsProps {
+  repo: CandidateRepo;
+  onDeleteRepo?: (id: string) => Promise<any>;
+  isDeleting?: boolean;
+}
+
 /**
  * Facts about the selected repository, shown only for what is actually known. Metadata that came
  * from GitHub is labelled as such; typed-in or fixture rows show their provenance instead.
  */
-export const RepoFacts: React.FC<{ repo: CandidateRepo }> = ({ repo }) => {
+export const RepoFacts: React.FC<RepoFactsProps> = ({ repo, onDeleteRepo, isDeleting }) => {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const meta = repo.githubMetadata ?? null;
   const fromGithub = repo.sourceType === 'github_api' && meta !== null;
   const rows: Array<[string, React.ReactNode]> = [
@@ -33,7 +40,7 @@ export const RepoFacts: React.FC<{ repo: CandidateRepo }> = ({ repo }) => {
           <Github className="mt-0.5 h-4 w-4 shrink-0 text-mocha" aria-hidden="true" />
           <h3 className="min-w-0 break-all text-sm font-bold text-ink">{repo.repoName}</h3>
         </div>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
           {repo.isDemo && <span className="badge badge-warm">Demo fixture</span>}
           <span className="badge badge-neutral">
             {fromGithub
@@ -44,8 +51,52 @@ export const RepoFacts: React.FC<{ repo: CandidateRepo }> = ({ repo }) => {
                 : 'Fixture: no GitHub facts'
               : 'Typed in: not fetched from GitHub'}
           </span>
+          {onDeleteRepo && !showDeleteConfirm && (
+            <button
+              type="button"
+              onClick={() => setShowDeleteConfirm(true)}
+              className="btn btn-danger min-h-7 py-1 px-2.5 text-xs inline-flex items-center gap-1"
+              title="Unsubmit or delete this repository"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              <span>Unsubmit</span>
+            </button>
+          )}
         </div>
       </div>
+
+      {showDeleteConfirm && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-danger/30 bg-danger-tint p-3 text-sm text-danger">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 shrink-0 text-danger" />
+            <span>Unsubmit <strong>{repo.repoName}</strong>? This removes it from assessment.</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={isDeleting}
+              onClick={async () => {
+                try {
+                  await onDeleteRepo?.(repo.id);
+                } finally {
+                  setShowDeleteConfirm(false);
+                }
+              }}
+              className="btn btn-danger min-h-7 py-1 px-3 text-xs font-bold"
+            >
+              {isDeleting ? 'Removing…' : 'Yes, unsubmit'}
+            </button>
+            <button
+              type="button"
+              disabled={isDeleting}
+              onClick={() => setShowDeleteConfirm(false)}
+              className="btn btn-secondary min-h-7 py-1 px-2.5 text-xs"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
       {meta?.description && <p className="break-words text-sm text-ink">{meta.description}</p>}
 

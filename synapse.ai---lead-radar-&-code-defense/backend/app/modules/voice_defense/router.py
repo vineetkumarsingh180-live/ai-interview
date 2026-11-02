@@ -20,7 +20,13 @@ from .interfaces import (
     get_repository_lookup,
 )
 from .models import VoiceSession
-from .schemas import VoiceSessionInitRequest, VoiceSessionResponse, VoiceTurnInput, VoiceTurnOutput
+from .schemas import (
+    VoiceCompleteResponse,
+    VoiceSessionInitRequest,
+    VoiceSessionResponse,
+    VoiceTurnInput,
+    VoiceTurnOutput,
+)
 from .service import VoiceInterviewService
 
 router = APIRouter(prefix="/assessment/voice", tags=["Voice Defense"])
@@ -63,6 +69,23 @@ async def get_session(session_id: UUID, db: AsyncSession = Depends(get_db)):
     if not session:
         raise NotFound("Voice session not found.")
     return session
+
+
+@router.post(
+    "/{session_id}/complete",
+    response_model=VoiceCompleteResponse,
+    summary="Complete the interview and compute overall score (1 to 10 scale)",
+)
+async def complete_session(
+    session_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    leaderboard: LeaderboardPublisher = Depends(get_leaderboard_publisher),
+    repositories: RepositoryLookup = Depends(get_repository_lookup),
+    interviewer: Interviewer = Depends(get_interviewer),
+):
+    return await VoiceInterviewService.complete_session(
+        db=db, session_id=session_id, leaderboard=leaderboard, repositories=repositories, interviewer=interviewer
+    )
 
 
 @router.websocket("/stream/{session_id}")

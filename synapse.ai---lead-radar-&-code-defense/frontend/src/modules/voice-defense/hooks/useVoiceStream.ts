@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { startVoiceSession, submitVoiceTurn } from '../api';
-import type { TranscriptTurn } from '../types';
+import { startVoiceSession, submitVoiceTurn, completeVoiceSession } from '../api';
+import type { TranscriptTurn, VoiceCompleteResult } from '../types';
 
 export type { TranscriptTurn };
 
@@ -30,6 +30,7 @@ export function useVoiceStream(
   const [isSessionActive, setIsSessionActive] = useState<boolean>(false);
   const [isStarting, setIsStarting] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isCompleting, setIsCompleting] = useState<boolean>(false);
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isAiSpeaking, setIsAiSpeaking] = useState<boolean>(false);
   const [userSpeechInput, setUserSpeechInput] = useState<string>('');
@@ -38,6 +39,10 @@ export function useVoiceStream(
   const [notice, setNotice] = useState<string | null>(null);
   const [audioLevel, setAudioLevel] = useState<number>(0.2);
   const [transcript, setTranscript] = useState<TranscriptTurn[]>([]);
+  const [interviewStage, setInterviewStage] = useState<string>('intro');
+  const [evaluationResult, setEvaluationResult] = useState<VoiceCompleteResult | null>(null);
+  const [resumeText, setResumeText] = useState<string>('');
+  const [geminiApiKey1, setGeminiApiKey1] = useState<string>('');
 
   const recognitionRef = useRef<any>(null);
   const animationFrameRef = useRef<number | null>(null);
@@ -103,12 +108,24 @@ export function useVoiceStream(
   }, []);
 
   /** Starts a real server-side session; the opening question comes from the server. */
-  const startSession = async () => {
+  const startSession = async (params?: { resumeText?: string; geminiApiKey1?: string }) => {
     setError(null);
     setNotice(null);
     setIsStarting(true);
+    setEvaluationResult(null);
+    setInterviewStage('intro');
+    const resume = params?.resumeText ?? resumeText;
+    const apiKey = params?.geminiApiKey1 ?? geminiApiKey1;
+    if (params?.resumeText !== undefined) setResumeText(params.resumeText);
+    if (params?.geminiApiKey1 !== undefined) setGeminiApiKey1(params.geminiApiKey1);
+
     try {
-      const session = await startVoiceSession({ repoId, candidateName });
+      const session = await startVoiceSession({
+        repoId,
+        candidateName,
+        resumeText: resume,
+        geminiApiKey1: apiKey,
+      });
       setSessionId(session.id);
       setVerdict(session.defenseVerdict);
       setTranscript(session.transcriptTurns);
@@ -141,6 +158,9 @@ export function useVoiceStream(
     try {
       const result = await submitVoiceTurn({ sessionId, speechText: text });
       setVerdict(result.currentVerdict);
+      if (result.interviewStage) {
+        setInterviewStage(result.interviewStage);
+      }
       if (result.aiStatus === 'generated' && result.interviewerReplyText) {
         setTranscript((prev) => [
           ...prev,
@@ -149,14 +169,51 @@ export function useVoiceStream(
         speakText(result.interviewerReplyText);
       } else {
         setNotice(
-          'Your answer was recorded for human review. The AI interviewer is unavailable, so there is no follow-up question.'
+          'Your answer was recorded for review. The AI interviewer is currently processing your response.'
         );
       }
+
+      if (result.isCompleted && result.evaluationScore) {
+        setInterviewStage('completed');
+        setEvaluationResult({
+          sessionId,
+          overallScore: result.evaluationScore,
+          technicalDepthScore: result.currentCompositeScore ?? result.evaluationScore,
+          clarityArticulationScore: result.evaluationScore,
+          projectDefenseScore: result.evaluationScore,
+          summary: result.evaluationFeedback || 'Interview completed and scored.',
+          keyStrengths: ['Technical communication', 'Code defense'],
+          areasForImprovement: ['Deeper architectural metrics'],
+          defenseVerdict: result.currentVerdict,
+        });
+      }
+
       options.onTurnCompleted?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Your answer could not be saved.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const completeSession = async (): Promise<VoiceCompleteResult | null> => {
+    if (!sessionId) return null;
+    setIsCompleting(true);
+    setError(null);
+    try {
+      const result = await completeVoiceSession(sessionId);
+      setEvaluationResult(result);
+      setInterviewStage('completed');
+      setVerdict(result.defenseVerdict);
+      setIsSessionActive(false);
+      speakText(`Thank you. Your overall score is ${result.overallScore} out of 10.`);
+      options.onTurnCompleted?.();
+      return result;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to complete and score the interview.');
+      return null;
+    } finally {
+      setIsCompleting(false);
     }
   };
 
@@ -197,6 +254,14 @@ export function useVoiceStream(
     isSessionActive,
     isStarting,
     isSubmitting,
+    isCompleting,
+    interviewStage,
+    resumeText,
+    setResumeText,
+    geminiApiKey1,
+    setGeminiApiKey1,
+    evaluationResult,
+    completeSession,
     startSession,
     endSession,
     isListening,

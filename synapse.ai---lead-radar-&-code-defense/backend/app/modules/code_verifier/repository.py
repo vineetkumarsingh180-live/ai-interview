@@ -27,3 +27,13 @@ async def list_repos(db: AsyncSession, *, limit: int, include_demo: bool = True)
     if not include_demo:
         stmt = stmt.where(CandidateRepo.is_demo.is_(False))
     return list((await db.execute(stmt)).scalars().all())
+
+
+async def delete_repo(db: AsyncSession, repo_id: uuid.UUID) -> bool:
+    stmt = select(CandidateRepo).options(*_with_results()).where(CandidateRepo.id == repo_id)
+    repo = (await db.execute(stmt)).scalar_one_or_none()
+    if not repo:
+        return False
+    await db.delete(repo)
+    await db.commit()
+    return True

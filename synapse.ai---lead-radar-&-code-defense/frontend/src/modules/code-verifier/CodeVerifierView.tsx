@@ -13,7 +13,19 @@ interface CodeVerifierViewProps {
 }
 
 export const CodeVerifierView: React.FC<CodeVerifierViewProps> = ({ state, onContinue }) => {
-  const { repos, reposError, activeRepo, selectedRepoId, setSelectedRepoId, submitRepo, isSubmitting, submissionError } = state;
+  const {
+    repos,
+    reposError,
+    activeRepo,
+    selectedRepoId,
+    setSelectedRepoId,
+    submitRepo,
+    isSubmitting,
+    submissionError,
+    deleteRepo,
+    isDeleting,
+    deleteError,
+  } = state;
 
   return (
     <div className="grid grid-cols-1 gap-5 xl:grid-cols-12">
@@ -24,7 +36,10 @@ export const CodeVerifierView: React.FC<CodeVerifierViewProps> = ({ state, onCon
           onSelectRepo={(id) => setSelectedRepoId(id)}
           onSubmitRepo={submitRepo}
           isSubmitting={isSubmitting}
+          onDeleteRepo={deleteRepo}
+          isDeleting={isDeleting}
           error={submissionError?.message ?? null}
+          deleteError={deleteError?.message ?? null}
           loadError={reposError?.message ?? null}
         />
 
@@ -41,7 +56,13 @@ export const CodeVerifierView: React.FC<CodeVerifierViewProps> = ({ state, onCon
       </div>
 
       <div className="min-w-0 space-y-5 xl:col-span-7">
-        {activeRepo && <RepoFacts repo={activeRepo} />}
+        {activeRepo && (
+          <RepoFacts
+            repo={activeRepo}
+            onDeleteRepo={deleteRepo}
+            isDeleting={isDeleting}
+          />
+        )}
         <CodeHealthGauge
           evaluation={activeRepo?.evaluation}
           benchmark={activeRepo?.benchmark}

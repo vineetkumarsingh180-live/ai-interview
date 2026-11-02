@@ -29,3 +29,15 @@ export function submitRepo(payload: SubmitRepoInput): Promise<CandidateRepo> {
     },
   });
 }
+
+export interface DeleteRepoResponse {
+  success: boolean;
+  repoId: string;
+}
+
+export function deleteRepo(repoId: string): Promise<DeleteRepoResponse> {
+  return requestJson<DeleteRepoResponse>(`/api/v1/assessment/repo/${repoId}`, {
+    method: 'DELETE',
+    errorMessage: 'Failed to delete repository',
+  });
+}

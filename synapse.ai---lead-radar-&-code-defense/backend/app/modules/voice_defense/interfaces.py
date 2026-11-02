@@ -5,7 +5,7 @@ The composition root (app/core/wiring.py) binds these to concrete implementation
 module never imports another module.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, List, Literal, Optional, Protocol
 from uuid import UUID
 
@@ -47,12 +47,43 @@ class FollowUpQuestion:
     status: Literal["generated", "unavailable", "invalid_response"]
     question: Optional[str] = None
     reason: Optional[str] = None
+    stage: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class InterviewEvaluation:
+    status: Literal["completed", "unavailable", "failed"]
+    overall_score: Optional[float] = None  # Scale: 1.0 to 10.0
+    technical_depth_score: Optional[float] = None
+    clarity_articulation_score: Optional[float] = None
+    project_defense_score: Optional[float] = None
+    summary: Optional[str] = None
+    key_strengths: List[str] = field(default_factory=list)
+    areas_for_improvement: List[str] = field(default_factory=list)
+    reason: Optional[str] = None
 
 
 class Interviewer(Protocol):
     """Produces the next interviewer question from the real dialogue (bound to AIService)."""
 
-    async def follow_up(self, turns: List[Dict[str, str]]) -> FollowUpQuestion: ...
+    async def follow_up(
+        self,
+        turns: List[Dict[str, str]],
+        *,
+        candidate_name: Optional[str] = None,
+        resume_text: Optional[str] = None,
+        repo_name: Optional[str] = None,
+        turn_index: Optional[int] = None,
+    ) -> FollowUpQuestion: ...
+
+    async def evaluate_interview(
+        self,
+        turns: List[Dict[str, str]],
+        *,
+        candidate_name: Optional[str] = None,
+        resume_text: Optional[str] = None,
+        repo_name: Optional[str] = None,
+    ) -> InterviewEvaluation: ...
 
 
 def get_interviewer() -> Interviewer:
