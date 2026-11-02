@@ -29,7 +29,7 @@ export class ApiError extends Error {
 const API_BASE: string = (((import.meta as any).env?.VITE_API_BASE_URL as string | undefined) ?? '').replace(/\/$/, '');
 
 interface RequestOptions {
-  method?: 'GET' | 'POST';
+  method?: 'GET' | 'POST' | 'DELETE' | 'PUT' | 'PATCH';
   body?: unknown;
   /** Message used when the server gives no readable `detail` in its error body. */
   errorMessage: string;
@@ -55,6 +55,9 @@ export async function requestJson<T>(path: string, options: RequestOptions): Pro
     const first = err?.errors?.[0];
     if (first) message += ` (${first.field}: ${first.message.replace(/^Value error, /, '')})`;
     throw new ApiError(message, res.status, err?.code ?? 'error', err?.errors);
+  }
+  if (res.status === 204 || res.headers.get('content-length') === '0') {
+    return undefined as unknown as T;
   }
   return res.json() as Promise<T>;
 }

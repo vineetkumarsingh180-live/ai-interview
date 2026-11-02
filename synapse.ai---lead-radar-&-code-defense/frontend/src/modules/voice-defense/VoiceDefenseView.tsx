@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { VoiceOrb } from './components/VoiceOrb';
 import { LiveTranscript } from './components/LiveTranscript';
+import { ResumeUploadModal } from './components/ResumeUploadModal';
+import { ScorecardModal } from './components/ScorecardModal';
 import type { VoiceInterviewState } from './hooks/useVoiceStream';
 import type { VoiceCandidate } from './types';
 
@@ -12,7 +14,22 @@ interface VoiceDefenseViewProps {
 }
 
 export const VoiceDefenseView: React.FC<VoiceDefenseViewProps> = ({ session, candidate }) => {
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
+  const [isScorecardOpen, setIsScorecardOpen] = useState(false);
+
   const hasAnswered = session.transcript.some((t) => t.speaker === 'candidate');
+
+  // Automatically open the scorecard when evaluation completes
+  useEffect(() => {
+    if (session.evaluationResult) {
+      setIsScorecardOpen(true);
+    }
+  }, [session.evaluationResult]);
+
+  const handleStartFromModal = (params: { resumeText: string; geminiApiKey1?: string }) => {
+    setIsResumeModalOpen(false);
+    session.startSession(params);
+  };
 
   return (
     <div className="grid grid-cols-1 gap-5 xl:grid-cols-12">
@@ -25,7 +42,7 @@ export const VoiceDefenseView: React.FC<VoiceDefenseViewProps> = ({ session, can
           audioLevel={session.audioLevel}
           canListen={session.canListen}
           onToggleListening={session.toggleListening}
-          onStartSession={session.startSession}
+          onStartSession={() => setIsResumeModalOpen(true)}
           onEndSession={session.endSession}
           hasAnswered={hasAnswered}
         />
@@ -57,8 +74,34 @@ export const VoiceDefenseView: React.FC<VoiceDefenseViewProps> = ({ session, can
           hasAnswered={hasAnswered}
           error={session.error}
           notice={session.notice}
+          interviewStage={session.interviewStage}
+          evaluationResult={session.evaluationResult}
+          onCompleteSession={session.completeSession}
+          isCompleting={session.isCompleting}
+          onOpenScorecard={() => setIsScorecardOpen(true)}
         />
       </div>
+
+      {/* Resume Setup Modal */}
+      <ResumeUploadModal
+        isOpen={isResumeModalOpen}
+        onClose={() => setIsResumeModalOpen(false)}
+        candidate={candidate}
+        initialResumeText={session.resumeText}
+        onStartInterview={handleStartFromModal}
+        isStarting={session.isStarting}
+        error={session.error}
+      />
+
+      {/* Assessment Scorecard Modal */}
+      <ScorecardModal
+        isOpen={isScorecardOpen}
+        onClose={() => setIsScorecardOpen(false)}
+        result={session.evaluationResult}
+        candidateName={candidate?.name ?? 'Candidate'}
+        repoName={candidate?.repoName ?? 'Project'}
+        onRestart={() => setIsResumeModalOpen(true)}
+      />
     </div>
   );
 };

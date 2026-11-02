@@ -27,7 +27,7 @@ export interface VoiceSessionInfo {
   transcriptTurns: TranscriptTurn[];
 }
 
-/** Response of POST /assessment/voice/turn. Scores are always null: answers are not auto-scored. */
+/** Response of POST /assessment/voice/turn. */
 export interface VoiceTurnResult {
   sessionId: string;
   turnNumber: number;
@@ -36,4 +36,20 @@ export interface VoiceTurnResult {
   defenseScoreDelta: number | null;
   currentCompositeScore: number | null;
   currentVerdict: string;
+  interviewStage?: string | null;
+  isCompleted?: boolean;
+  evaluationScore?: number | null;
+  evaluationFeedback?: string | null;
+}
+
+export interface VoiceCompleteResult {
+  sessionId: string;
+  overallScore: number; // Scale: 1.0 to 10.0
+  technicalDepthScore: number;
+  clarityArticulationScore: number;
+  projectDefenseScore: number;
+  summary: string;
+  keyStrengths: string[];
+  areasForImprovement: string[];
+  defenseVerdict: string;
 }

@@ -7,7 +7,7 @@ imports this module. Results are data: persistence and review states stay in thi
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Literal, Optional, Protocol
+from typing import Any, Dict, List, Literal, Optional, Protocol
 
 AnalysisStatus = Literal["analyzed", "unavailable", "invalid_response"]
 

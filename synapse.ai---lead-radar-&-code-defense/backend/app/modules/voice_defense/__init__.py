@@ -5,6 +5,7 @@ from .router import router
 from .ingestion import DemoSession, delete_demo_sessions, ingest_demo_session
 from .interfaces import (
     FollowUpQuestion,
+    InterviewEvaluation,
     Interviewer,
     LeaderboardPublisher,
     RepositoryLookup,
@@ -15,6 +16,7 @@ from .interfaces import (
 
 __all__ = [
     "FollowUpQuestion",
+    "InterviewEvaluation",
     "Interviewer",
     "get_interviewer",
     "router",

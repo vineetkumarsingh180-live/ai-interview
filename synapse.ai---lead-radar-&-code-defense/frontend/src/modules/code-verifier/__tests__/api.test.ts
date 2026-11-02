@@ -1,6 +1,6 @@
 import { test, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { submitRepo } from '../api';
+import { submitRepo, deleteRepo } from '../api';
 
 const realFetch = globalThis.fetch;
 let last: { url: string; init?: RequestInit } | null = null;
@@ -19,4 +19,10 @@ test('submitRepo sends camelCase fields and no invented defaults', async () => {
   assert.equal(last?.url, '/api/v1/assessment/repo/submit');
   const body = JSON.parse(String(last?.init?.body));
   assert.deepEqual(body, { candidateName: 'Ada', candidateGithubHandle: 'ada', repoUrl: 'https://github.com/ada/engine' });
+});
+
+test('deleteRepo sends DELETE to /api/v1/assessment/repo/{repoId}', async () => {
+  await deleteRepo('12345-abcde');
+  assert.equal(last?.url, '/api/v1/assessment/repo/12345-abcde');
+  assert.equal(last?.init?.method, 'DELETE');
 });

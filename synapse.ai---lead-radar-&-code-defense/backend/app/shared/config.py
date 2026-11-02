@@ -23,6 +23,7 @@ class Settings(BaseSettings):
 
     # Gemini (server-side only; the browser never sees the key). Configured via .env only.
     GEMINI_API_KEY: str = ""
+    GEMINI_API_KEY_1: str = ""
     GEMINI_MODEL: str = ""
 
     # GitHub REST API (optional token raises the rate limit; metadata only, no code is ever fetched).

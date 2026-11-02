@@ -35,6 +35,9 @@ class FakeDb:
     def add(self, obj):
         self.added.append(obj)
 
+    async def delete(self, obj):
+        pass
+
     @asynccontextmanager
     async def begin_nested(self):
         yield

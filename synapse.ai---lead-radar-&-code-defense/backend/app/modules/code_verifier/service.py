@@ -57,6 +57,10 @@ class CodeVerifierService:
         return await repository.list_repos(db, limit=limit, include_demo=include_demo)
 
     @staticmethod
+    async def delete_repository(db: AsyncSession, repo_id: uuid.UUID) -> bool:
+        return await repository.delete_repo(db, repo_id)
+
+    @staticmethod
     async def request_analysis(db: AsyncSession, repo_id: uuid.UUID, analyzer: RepositoryAnalyzer) -> RepositoryAnalysis:
         """
         The seam where repository intelligence is called. This build fetches NO repository content,

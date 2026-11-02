@@ -81,6 +81,19 @@ def get_gemini_api_key() -> str:
     return key
 
 
+def get_voice_defense_gemini_api_key() -> str:
+    """
+    Returns the configured GEMINI_API_KEY_1 specifically for Voice Defense.
+    Falls back to GEMINI_API_KEY if GEMINI_API_KEY_1 is not set.
+    """
+    key = (settings.GEMINI_API_KEY_1 or "").strip() or (settings.GEMINI_API_KEY or "").strip()
+    if not key:
+        safe_msg = "GEMINI_API_KEY_1 is not configured in .env; Voice Defense AI features will be unavailable."
+        logger.warning(safe_msg)
+        raise ModelConfigurationError(safe_msg)
+    return key
+
+
 def is_gemini_configured() -> bool:
     """
     Checks if both GEMINI_API_KEY and GEMINI_MODEL are configured and valid.
@@ -103,5 +116,6 @@ __all__ = [
     "validate_gemini_model",
     "get_gemini_model",
     "get_gemini_api_key",
+    "get_voice_defense_gemini_api_key",
     "is_gemini_configured",
 ]

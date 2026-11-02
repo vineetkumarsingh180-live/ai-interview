@@ -997,6 +997,87 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Code Verifier"
+        ],
+        "summary": "Delete or unsubmit a candidate repository",
+        "operationId": "delete_repo_api_v1_assessment_repo__repo_id__delete",
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Repo Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoDeleteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/assessment/voice/leaderboard": {
@@ -1276,6 +1357,89 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/VoiceSessionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A dependency (AI provider or database) is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assessment/voice/{session_id}/complete": {
+      "post": {
+        "tags": [
+          "Voice Defense"
+        ],
+        "summary": "Complete the interview and compute overall score (1 to 10 scale)",
+        "operationId": "complete_session_api_v1_assessment_voice__session_id__complete_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceCompleteResponse"
                 }
               }
             }
@@ -2808,6 +2972,25 @@
         ],
         "title": "RawPostResponse"
       },
+      "RepoDeleteResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "repoId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Repoid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "repoId"
+        ],
+        "title": "RepoDeleteResponse"
+      },
       "RepoSubmissionRequest": {
         "properties": {
           "candidateName": {
@@ -2923,6 +3106,68 @@
         ],
         "title": "TranscriptTurn"
       },
+      "VoiceCompleteResponse": {
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Sessionid"
+          },
+          "overallScore": {
+            "type": "number",
+            "title": "Overallscore",
+            "description": "Overall score in range 1.0 to 10.0"
+          },
+          "technicalDepthScore": {
+            "type": "number",
+            "title": "Technicaldepthscore",
+            "description": "Score in range 1.0 to 10.0"
+          },
+          "clarityArticulationScore": {
+            "type": "number",
+            "title": "Clarityarticulationscore",
+            "description": "Score in range 1.0 to 10.0"
+          },
+          "projectDefenseScore": {
+            "type": "number",
+            "title": "Projectdefensescore",
+            "description": "Score in range 1.0 to 10.0"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "keyStrengths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Keystrengths"
+          },
+          "areasForImprovement": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Areasforimprovement"
+          },
+          "defenseVerdict": {
+            "type": "string",
+            "title": "Defenseverdict"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sessionId",
+          "overallScore",
+          "technicalDepthScore",
+          "clarityArticulationScore",
+          "projectDefenseScore",
+          "summary",
+          "defenseVerdict"
+        ],
+        "title": "VoiceCompleteResponse"
+      },
       "VoiceSessionInitRequest": {
         "properties": {
           "repoId": {
@@ -2961,6 +3206,30 @@
               }
             ],
             "title": "Focustopic"
+          },
+          "resumeText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resumetext",
+            "description": "Candidate resume text or summary"
+          },
+          "geminiApiKey1": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geminiapikey1",
+            "description": "Dedicated Gemini API key for Voice Defense"
           }
         },
         "type": "object",
@@ -3164,12 +3433,50 @@
               }
             ],
             "title": "Currentcompositescore",
-            "description": "Null: answers are not auto-scored"
+            "description": "Current score out of 10 if completed"
           },
           "currentVerdict": {
             "type": "string",
             "title": "Currentverdict",
-            "description": "Always a review state such as needs_human_review; never a hiring decision"
+            "description": "Review state or interview_completed"
+          },
+          "interviewStage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Interviewstage"
+          },
+          "isCompleted": {
+            "type": "boolean",
+            "title": "Iscompleted",
+            "default": false
+          },
+          "evaluationScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluationscore"
+          },
+          "evaluationFeedback": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluationfeedback"
           }
         },
         "type": "object",

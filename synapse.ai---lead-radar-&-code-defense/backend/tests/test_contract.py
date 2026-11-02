@@ -44,8 +44,9 @@ def test_expected_routes_registered():
         ("POST", "/api/v1/leads/chat"),
         ("GET", "/api/v1/leads/outreach/history"),
         ("POST", "/api/v1/assessment/repo/submit"), ("GET", "/api/v1/assessment/repo/recent"),
-        ("GET", "/api/v1/assessment/repo/{repo_id}"),
+        ("GET", "/api/v1/assessment/repo/{repo_id}"), ("DELETE", "/api/v1/assessment/repo/{repo_id}"),
         ("POST", "/api/v1/assessment/voice/init"), ("POST", "/api/v1/assessment/voice/turn"),
+        ("POST", "/api/v1/assessment/voice/{session_id}/complete"),
         ("GET", "/api/v1/assessment/voice/leaderboard"), ("GET", "/api/v1/assessment/voice/{session_id}"),
         ("GET", "/api/health"),
     }

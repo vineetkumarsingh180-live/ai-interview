@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchRepos, submitRepo, SubmitRepoInput } from '../api';
+import { fetchRepos, submitRepo, deleteRepo, SubmitRepoInput, DeleteRepoResponse } from '../api';
 import type { CandidateRepo } from '../types';
 
 export function useRepoEvaluation() {
@@ -27,6 +27,14 @@ export function useRepoEvaluation() {
     },
   });
 
+  const deleteRepoMutation = useMutation<DeleteRepoResponse, Error, string>({
+    mutationFn: deleteRepo,
+    onSuccess: (_, deletedId) => {
+      queryClient.invalidateQueries({ queryKey: ['candidate-repos'] });
+      setSelectedRepoId((prev) => (prev === deletedId ? null : prev));
+    },
+  });
+
   // Currently selected or default active repo
   const activeRepo = repos.find((r) => r.id === selectedRepoId) || repos[0] || null;
 
@@ -40,6 +48,9 @@ export function useRepoEvaluation() {
     submitRepo: submitRepoMutation.mutateAsync,
     isSubmitting: submitRepoMutation.isPending,
     submissionError: submitRepoMutation.error,
+    deleteRepo: deleteRepoMutation.mutateAsync,
+    isDeleting: deleteRepoMutation.isPending,
+    deleteError: deleteRepoMutation.error,
     refetchRepos,
   };
 }
