@@ -1,11 +1,11 @@
 # Startup
 
-Stack: React + Vite (frontend) + FastAPI (only backend) + PostgreSQL + pgvector.
+Stack: React + Vite (frontend) → FastAPI (only backend) → PostgreSQL + pgvector. See `CLAUDE.md` for the rules and `handoff.md` for status (both local, git-ignored).
 
-All paths below are run from the project root directory.
+All paths below are inside `synapse.ai---lead-radar-&-code-defense/` (quote it: it contains `&`).
 
 ```bash
-# 1. PostgreSQL (macOS Homebrew; the locale variable is required)
+# 1. PostgreSQL  (macOS Homebrew; the locale variable is required)
 export LC_ALL=en_US.UTF-8
 pg_ctl -D /opt/homebrew/var/postgresql@18 -l /opt/homebrew/var/log/postgresql@18.log start
 
