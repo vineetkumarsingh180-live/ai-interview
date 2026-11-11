@@ -1,0 +1,352 @@
+{
+  "_comment": "DEMO SHOWCASE restored from the original hardcoded development seed (names, companies, numbers as they were). Loaded with is_demo=true / source_type=demo_fixture and shown with 'Demo fixture' / 'Demo data' labels in the UI. None of it is a real post, measurement or hiring decision; status stays 'needs_human_review'. Repository URLs are not fetched from GitHub and may not exist.",
+  "leads": [
+    {
+      "platform": "twitter",
+      "external_id": "tw_189218291",
+      "author_handle": "@steve_aura",
+      "author_name": "Steve Vance (CEO)",
+      "source_channel": "Demo fixture",
+      "minutes_ago": 15,
+      "text": "Hiring Staff Distributed Systems Engineer to lead our low-latency Raft consensus clustering engine in Rust. $220k-$285k + 0.25% equity. Remote friendly. DM me directly!",
+      "structured": {
+        "role_title": "Staff Distributed Systems Engineer",
+        "company_name": "Aura Labs",
+        "company_stage": "Series A ($14M)",
+        "comp_min": 220000,
+        "comp_max": 285000,
+        "comp_currency": "USD",
+        "equity_note": "+ 0.25% Equity",
+        "tech_stack": [
+          "Rust",
+          "Raft",
+          "Kafka",
+          "PostgreSQL",
+          "Zero-Copy"
+        ],
+        "location_mode": "Remote",
+        "contact_anchor": "DM @steve_aura on X or steve@auralabs.io",
+        "match_score": 99.4,
+        "urgency_tier": "Immediate",
+        "summary": "Building low-latency consensus clustering engine for next-gen stream processing. Looking for deep Raft & network state machine experience."
+      }
+    },
+    {
+      "platform": "reddit",
+      "external_id": "rd_9827182",
+      "author_handle": "u/sol_core_dev",
+      "author_name": "Solana Infra Team",
+      "source_channel": "Demo fixture",
+      "minutes_ago": 50,
+      "text": "We need a Principal Protocol Architect with heavy Rust/Wasm and consensus optimization experience. $240k - $320k base + token allocation. Contact engineering@solana.org",
+      "structured": {
+        "role_title": "Principal Protocol Architect",
+        "company_name": "Solana Foundation / Ecosystem",
+        "company_stage": "Ecosystem Grant",
+        "comp_min": 240000,
+        "comp_max": 320000,
+        "comp_currency": "USD",
+        "equity_note": "+ Token Pool",
+        "tech_stack": [
+          "Rust",
+          "Solana",
+          "Wasm",
+          "eBPF",
+          "P2P Gossip"
+        ],
+        "location_mode": "Remote",
+        "contact_anchor": "engineering@solana.org or Telegram @sol_infra",
+        "match_score": 97.8,
+        "urgency_tier": "High",
+        "summary": "Validator pipeline scaling, transaction scheduling under heavy MEV contention, and asynchronous state verification."
+      }
+    },
+    {
+      "platform": "linkedin",
+      "external_id": "li_2391083",
+      "author_handle": "Neon Systems Inc.",
+      "author_name": "Talent Acquisition",
+      "source_channel": "Demo fixture",
+      "minutes_ago": 130,
+      "text": "Neon Systems is expanding its Core Data Layer team! Looking for a Senior Concurrency & Infrastructure Lead with Go/etcd/Postgres expertise.",
+      "structured": {
+        "role_title": "Senior Infrastructure & Concurrency Lead",
+        "company_name": "Neon Systems",
+        "company_stage": "Series B",
+        "comp_min": 195000,
+        "comp_max": 250000,
+        "comp_currency": "USD",
+        "equity_note": "+ 0.15% Options",
+        "tech_stack": [
+          "Go",
+          "Kubernetes",
+          "gRPC",
+          "PostgreSQL",
+          "etcd"
+        ],
+        "location_mode": "Hybrid",
+        "contact_anchor": "LinkedIn InMail to VP of Engineering",
+        "match_score": 94.6,
+        "urgency_tier": "Normal",
+        "summary": "Multi-region distributed database proxy routing, connection pooling, and fault injection testing."
+      }
+    },
+    {
+      "platform": "telegram",
+      "external_id": "tg_882910",
+      "author_handle": "@vektor_cto",
+      "author_name": "Dr. Elena Rostova",
+      "source_channel": "Demo fixture",
+      "minutes_ago": 250,
+      "text": "Building a new vector search storage engine from scratch. Need kernel / LSM-tree systems engineer. High equity + competitive compensation.",
+      "structured": {
+        "role_title": "Core Database Kernel Engineer",
+        "company_name": "Vektor Data",
+        "company_stage": "Seed ($4.5M)",
+        "comp_min": 210000,
+        "comp_max": 260000,
+        "comp_currency": "USD",
+        "equity_note": "+ 1.0% Equity",
+        "tech_stack": [
+          "C++",
+          "Rust",
+          "LSM-Tree",
+          "SIMD",
+          "Linux io_uring"
+        ],
+        "location_mode": "Remote",
+        "contact_anchor": "founders@vektordata.ai or Telegram @vektor_cto",
+        "match_score": 92.1,
+        "urgency_tier": "Immediate",
+        "summary": "Zero-copy high-performance vector index engine utilizing SIMD instructions and io_uring asynchronous disk I/O."
+      }
+    },
+    {
+      "platform": "reddit",
+      "external_id": "rd_demo_seeker_1",
+      "author_handle": "u/open_to_work_dev",
+      "author_name": "Open To Work Dev",
+      "source_channel": "Demo fixture",
+      "minutes_ago": 75,
+      "text": "Senior backend engineer, 8 years of Go and Rust, open to new roles. Available immediately, remote only.",
+      "demo_classification": "seeking"
+    },
+    {
+      "platform": "twitter",
+      "external_id": "tw_demo_awaiting_1",
+      "author_handle": "@orbitgrid_ops",
+      "author_name": "Orbit Grid Ops",
+      "source_channel": "Demo fixture",
+      "minutes_ago": 5,
+      "text": "Growing the platform team at Orbit Grid. Looking for an SRE with deep Kubernetes experience. DMs open."
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_name": "Alex Vance",
+      "candidate_handle": "alexvance",
+      "candidate_avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      "repo_url": "https://github.com/alexvance/distributed-raft-kv",
+      "repo_name": "distributed-raft-kv",
+      "target_role": "Staff Distributed Systems Engineer",
+      "branch": "main",
+      "commit_sha": "d81a9f4",
+      "language": "Rust",
+      "benchmark": {
+        "test_coverage_pct": 94.2,
+        "cyclomatic_complexity": 3.8,
+        "sec_vulnerabilities_count": 0,
+        "execution_time_ms": 1420,
+        "suite_log_output": "PASS src/raft/election_test.rs (32/32 tests passed)\nPASS src/raft/split_brain_test.rs (partition quorum verified)\nPASS src/storage/wal_sync.rs (fsync benchmark 0.12ms p99)"
+      },
+      "evaluation": {
+        "composite_health_score": 94,
+        "architecture_score": 96,
+        "concurrency_safety_score": 98,
+        "maintainability_score": 91,
+        "summary_verdict": "Exemplary implementation of the Raft consensus state machine in Rust. Clean zero-allocation serialization in the networking layer, though the heartbeat election timeout jitter could benefit from cryptographic seed randomization under adversarial network partition.",
+        "rubric_breakdown": {
+          "Consensus Safety & Quorum": 96,
+          "Memory Safety & Rust Idioms": 98,
+          "Partition Tolerance & Network Mocking": 94,
+          "AST Authenticity (Anti-LLM Cheating)": 98
+        },
+        "flagged_anomalies": [
+          {
+            "type": "Timeout Jitter",
+            "severity": "Low",
+            "description": "Election timeout randomized between 150-300ms without entropy seed reset after socket reset."
+          }
+        ],
+        "recommended_defense_topics": [
+          "Log compaction and snapshot transmission under asymmetric split-brain partitions",
+          "Zero-copy buffer reclamation in custom circular ring buffer",
+          "Handling Byzantine or sluggish followers during joint consensus reconfiguration"
+        ]
+      },
+      "interview": {
+        "final_composite_score": 93.8
+      },
+      "leaderboard": {
+        "code_health_score": 94.2,
+        "voice_defense_score": 93.8,
+        "composite_percentile": 99.8,
+        "rank_tier": "Top 0.2%",
+        "minutes_ago": 0
+      },
+      "submitted_minutes_ago": 300,
+      "github_metadata": {
+        "full_name": "alexvance/distributed-raft-kv",
+        "description": "Raft consensus key-value store in Rust",
+        "topics": [
+          "raft",
+          "rust",
+          "distributed-systems"
+        ],
+        "languages_bytes": {
+          "Rust": 184320,
+          "Shell": 2210
+        },
+        "stars": 1284,
+        "forks": 143,
+        "open_issues": 7,
+        "license": "MIT",
+        "visibility": "public",
+        "pushed_at": "2026-10-08T14:22:10Z",
+        "created_at": "2025-11-02T09:00:00Z"
+      }
+    },
+    {
+      "candidate_name": "Sophia Chen",
+      "candidate_handle": "sophiachen_dev",
+      "candidate_avatar_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
+      "repo_url": "https://github.com/sophiachen/solana-mev-scheduler",
+      "repo_name": "solana-mev-scheduler",
+      "target_role": "Principal Protocol Architect",
+      "branch": "main",
+      "commit_sha": "9c44b12",
+      "language": "Rust",
+      "benchmark": {
+        "test_coverage_pct": 91.5,
+        "cyclomatic_complexity": 4.1,
+        "sec_vulnerabilities_count": 0,
+        "execution_time_ms": 1880,
+        "suite_log_output": "PASS tests/mempool_sort.rs\nPASS tests/bundle_sim.rs"
+      },
+      "evaluation": {
+        "composite_health_score": 92,
+        "architecture_score": 94,
+        "concurrency_safety_score": 92,
+        "maintainability_score": 90,
+        "summary_verdict": "High-throughput lock-free ring buffer for Solana transaction scheduling. Thorough benchmarks demonstrating 420k tx/sec parsing throughput.",
+        "rubric_breakdown": {
+          "Throughput & Concurrency": 95,
+          "Protocol Compliance": 92,
+          "Test Rigor": 89
+        },
+        "flagged_anomalies": [],
+        "recommended_defense_topics": [
+          "Contention handling in lock-free transaction queues",
+          "Fork choice evaluation under flash-loan sandwich attacks"
+        ]
+      },
+      "interview": {
+        "final_composite_score": 91.5
+      },
+      "leaderboard": {
+        "code_health_score": 92.0,
+        "voice_defense_score": 91.5,
+        "composite_percentile": 98.6,
+        "rank_tier": "Top 1.4%",
+        "minutes_ago": 3600
+      },
+      "submitted_minutes_ago": 600,
+      "github_metadata": {
+        "full_name": "sophiachen/solana-mev-scheduler",
+        "description": "Lock-free transaction scheduler for validator pipelines",
+        "topics": [
+          "solana",
+          "rust",
+          "scheduler"
+        ],
+        "languages_bytes": {
+          "Rust": 152880,
+          "TOML": 1800
+        },
+        "stars": 942,
+        "forks": 88,
+        "open_issues": 4,
+        "license": "Apache-2.0",
+        "visibility": "public",
+        "pushed_at": "2026-10-05T11:03:45Z",
+        "created_at": "2025-12-14T09:00:00Z"
+      }
+    },
+    {
+      "candidate_name": "Marcus Thorne",
+      "candidate_handle": "m_thorne",
+      "candidate_avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      "repo_url": "https://github.com/mthorne/etcd-raft-proxy",
+      "repo_name": "etcd-raft-proxy",
+      "target_role": "Senior Infrastructure & Concurrency Lead",
+      "branch": "main",
+      "commit_sha": "f1023ba",
+      "language": "Go",
+      "benchmark": {
+        "test_coverage_pct": 88.4,
+        "cyclomatic_complexity": 4.6,
+        "sec_vulnerabilities_count": 0,
+        "execution_time_ms": 950,
+        "suite_log_output": "PASS proxy_test.go"
+      },
+      "evaluation": {
+        "composite_health_score": 89,
+        "architecture_score": 90,
+        "concurrency_safety_score": 88,
+        "maintainability_score": 89,
+        "summary_verdict": "Robust Go gRPC proxy for multi-cluster etcd synchronization. Clear context cancellation and channel lifecycle management.",
+        "rubric_breakdown": {
+          "Concurrency Safety": 88,
+          "Network Resiliency": 90
+        },
+        "flagged_anomalies": [],
+        "recommended_defense_topics": [
+          "Goroutine leak prevention during graceful shutdown",
+          "Watch stream compaction backpressure"
+        ]
+      },
+      "interview": {
+        "final_composite_score": 88.5
+      },
+      "leaderboard": {
+        "code_health_score": 89.0,
+        "voice_defense_score": 88.5,
+        "composite_percentile": 94.2,
+        "rank_tier": "Top 5.8%",
+        "target_role": "Senior Infrastructure Lead",
+        "minutes_ago": 7200
+      },
+      "submitted_minutes_ago": 900,
+      "github_metadata": {
+        "full_name": "mthorne/etcd-raft-proxy",
+        "description": "gRPC proxy for multi-cluster etcd synchronization",
+        "topics": [
+          "etcd",
+          "go",
+          "grpc"
+        ],
+        "languages_bytes": {
+          "Go": 97640,
+          "Makefile": 1200
+        },
+        "stars": 517,
+        "forks": 61,
+        "open_issues": 9,
+        "license": "BSD-3-Clause",
+        "visibility": "public",
+        "pushed_at": "2026-09-29T17:40:00Z",
+        "created_at": "2026-01-20T09:00:00Z"
+      }
+    }
+  ]
+}

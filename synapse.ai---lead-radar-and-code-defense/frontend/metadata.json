@@ -1,0 +1,6 @@
+{
+  "name": "Synapse.AI - Lead Radar & Code Defense",
+  "description": "Enterprise AI Job Lead Radar with semantic outreach drafting and GitHub Code Verifier with real-time AI Voice Interview defense hub.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

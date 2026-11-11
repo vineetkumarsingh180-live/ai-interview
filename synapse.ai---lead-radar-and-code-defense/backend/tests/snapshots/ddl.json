@@ -1,0 +1,60 @@
+{
+ "benchmark_suites": "CREATE TABLE benchmark_suites (\n\tid UUID NOT NULL, \n\trepo_id UUID NOT NULL, \n\ttest_coverage_pct FLOAT NOT NULL, \n\tcyclomatic_complexity FLOAT NOT NULL, \n\tsec_vulnerabilities_count INTEGER NOT NULL, \n\tai_generated_probability FLOAT NOT NULL, \n\texecution_time_ms INTEGER NOT NULL, \n\tsuite_log_output TEXT NOT NULL, \n\tcreated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (repo_id), \n\tFOREIGN KEY(repo_id) REFERENCES candidate_repos (id) ON DELETE CASCADE\n)",
+ "benchmark_suites__indexes": [],
+ "candidate_repos": "CREATE TABLE candidate_repos (\n\tid UUID NOT NULL, \n\tcandidate_name VARCHAR(255) NOT NULL, \n\tcandidate_github_handle VARCHAR(120) NOT NULL, \n\tcandidate_avatar_url VARCHAR(512), \n\trepo_url VARCHAR(512) NOT NULL, \n\trepo_name VARCHAR(255) NOT NULL, \n\ttarget_role VARCHAR(150) NOT NULL, \n\tbranch VARCHAR(100) NOT NULL, \n\tcommit_sha VARCHAR(64) NOT NULL, \n\tlanguage VARCHAR(80) NOT NULL, \n\tstatus VARCHAR(50) NOT NULL, \n\tsubmitted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, \n\tPRIMARY KEY (id)\n)",
+ "candidate_repos__indexes": [
+  "CREATE INDEX ix_candidate_repos_candidate_github_handle ON candidate_repos (candidate_github_handle)",
+  "CREATE INDEX ix_candidate_repos_candidate_name ON candidate_repos (candidate_name)",
+  "CREATE INDEX ix_candidate_repos_id ON candidate_repos (id)",
+  "CREATE INDEX ix_candidate_repos_repo_url ON candidate_repos (repo_url)",
+  "CREATE INDEX ix_candidate_repos_status ON candidate_repos (status)",
+  "CREATE INDEX ix_candidate_repos_submitted_at ON candidate_repos (submitted_at)"
+ ],
+ "code_evaluation_results": "CREATE TABLE code_evaluation_results (\n\tid UUID NOT NULL, \n\trepo_id UUID NOT NULL, \n\tcomposite_health_score FLOAT NOT NULL, \n\tarchitecture_score FLOAT NOT NULL, \n\tconcurrency_safety_score FLOAT NOT NULL, \n\tmaintainability_score FLOAT NOT NULL, \n\tanti_cheat_confidence FLOAT NOT NULL, \n\tsummary_verdict TEXT NOT NULL, \n\trubric_breakdown JSON NOT NULL, \n\tflagged_anomalies JSON NOT NULL, \n\trecommended_defense_topics JSON NOT NULL, \n\tevaluated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (repo_id), \n\tFOREIGN KEY(repo_id) REFERENCES candidate_repos (id) ON DELETE CASCADE\n)",
+ "code_evaluation_results__indexes": [],
+ "job_leads": "CREATE TABLE job_leads (\n\tid UUID NOT NULL, \n\traw_post_id UUID NOT NULL, \n\trole_title VARCHAR(255) NOT NULL, \n\tcompany_name VARCHAR(255) NOT NULL, \n\tcompany_stage VARCHAR(100), \n\tcomp_min FLOAT, \n\tcomp_max FLOAT, \n\tcomp_currency VARCHAR(10) NOT NULL, \n\tequity_note VARCHAR(120), \n\ttech_stack JSON NOT NULL, \n\tlocation_mode VARCHAR(50) NOT NULL, \n\tclearance_required BOOLEAN NOT NULL, \n\tis_hiring BOOLEAN NOT NULL, \n\tmatch_score FLOAT NOT NULL, \n\turgency_tier VARCHAR(50) NOT NULL, \n\tcontact_anchor VARCHAR(255), \n\tenrichment_metadata JSON NOT NULL, \n\tcreated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (raw_post_id), \n\tFOREIGN KEY(raw_post_id) REFERENCES raw_posts (id) ON DELETE CASCADE\n)",
+ "job_leads__indexes": [
+  "CREATE INDEX ix_job_leads_company_name ON job_leads (company_name)",
+  "CREATE INDEX ix_job_leads_created_at ON job_leads (created_at)",
+  "CREATE INDEX ix_job_leads_id ON job_leads (id)",
+  "CREATE INDEX ix_job_leads_is_hiring ON job_leads (is_hiring)",
+  "CREATE INDEX ix_job_leads_role_title ON job_leads (role_title)"
+ ],
+ "lead_embeddings": "CREATE TABLE lead_embeddings (\n\tid UUID NOT NULL, \n\tlead_id UUID NOT NULL, \n\tembedding VECTOR(768), \n\ttext_content TEXT NOT NULL, \n\tcreated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, \n\tPRIMARY KEY (id), \n\tFOREIGN KEY(lead_id) REFERENCES job_leads (id) ON DELETE CASCADE\n)",
+ "lead_embeddings__indexes": [
+  "CREATE UNIQUE INDEX ix_lead_embeddings_lead_id ON lead_embeddings (lead_id)"
+ ],
+ "leaderboard_scores": "CREATE TABLE leaderboard_scores (\n\tid UUID NOT NULL, \n\tsession_id UUID NOT NULL, \n\tcandidate_name VARCHAR(255) NOT NULL, \n\tcandidate_avatar_url VARCHAR(512), \n\tcandidate_handle VARCHAR(120) NOT NULL, \n\ttarget_role VARCHAR(150) NOT NULL, \n\trepo_name VARCHAR(255) NOT NULL, \n\tcode_health_score FLOAT NOT NULL, \n\tvoice_defense_score FLOAT NOT NULL, \n\tcomposite_percentile FLOAT NOT NULL, \n\trank_tier VARCHAR(50) NOT NULL, \n\tstatus_tag VARCHAR(50) NOT NULL, \n\trecorded_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (session_id), \n\tFOREIGN KEY(session_id) REFERENCES voice_sessions (id) ON DELETE CASCADE\n)",
+ "leaderboard_scores__indexes": [
+  "CREATE INDEX ix_leaderboard_scores_candidate_handle ON leaderboard_scores (candidate_handle)",
+  "CREATE INDEX ix_leaderboard_scores_candidate_name ON leaderboard_scores (candidate_name)",
+  "CREATE INDEX ix_leaderboard_scores_composite_percentile ON leaderboard_scores (composite_percentile)",
+  "CREATE INDEX ix_leaderboard_scores_id ON leaderboard_scores (id)",
+  "CREATE INDEX ix_leaderboard_scores_rank_tier ON leaderboard_scores (rank_tier)",
+  "CREATE INDEX ix_leaderboard_scores_recorded_at ON leaderboard_scores (recorded_at)"
+ ],
+ "outreach_drafts": "CREATE TABLE outreach_drafts (\n\tid UUID NOT NULL, \n\tlead_id UUID NOT NULL, \n\ttone VARCHAR(50) NOT NULL, \n\tpitch_subject VARCHAR(255) NOT NULL, \n\tgenerated_pitch TEXT NOT NULL, \n\tcandidate_profile_context TEXT, \n\tstatus VARCHAR(50) NOT NULL, \n\tmodel_version VARCHAR(80) NOT NULL, \n\tprompt_tokens INTEGER NOT NULL, \n\tcompletion_tokens INTEGER NOT NULL, \n\tcreated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, \n\tPRIMARY KEY (id), \n\tFOREIGN KEY(lead_id) REFERENCES job_leads (id) ON DELETE CASCADE\n)",
+ "outreach_drafts__indexes": [
+  "CREATE INDEX ix_outreach_drafts_created_at ON outreach_drafts (created_at)",
+  "CREATE INDEX ix_outreach_drafts_id ON outreach_drafts (id)",
+  "CREATE INDEX ix_outreach_drafts_lead_id ON outreach_drafts (lead_id)"
+ ],
+ "raw_posts": "CREATE TABLE raw_posts (\n\tid UUID NOT NULL, \n\tplatform VARCHAR(50) NOT NULL, \n\texternal_id VARCHAR(255) NOT NULL, \n\tauthor_handle VARCHAR(120) NOT NULL, \n\tauthor_name VARCHAR(255) NOT NULL, \n\tauthor_avatar_url VARCHAR(512), \n\traw_content TEXT NOT NULL, \n\tsource_channel VARCHAR(120) NOT NULL, \n\tingested_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, \n\tis_processed BOOLEAN NOT NULL, \n\tPRIMARY KEY (id)\n)",
+ "raw_posts__indexes": [
+  "CREATE INDEX ix_raw_posts_author_handle ON raw_posts (author_handle)",
+  "CREATE INDEX ix_raw_posts_id ON raw_posts (id)",
+  "CREATE INDEX ix_raw_posts_ingested_at ON raw_posts (ingested_at)",
+  "CREATE INDEX ix_raw_posts_is_processed ON raw_posts (is_processed)",
+  "CREATE INDEX ix_raw_posts_platform ON raw_posts (platform)",
+  "CREATE UNIQUE INDEX ix_raw_posts_external_id ON raw_posts (external_id)"
+ ],
+ "voice_sessions": "CREATE TABLE voice_sessions (\n\tid UUID NOT NULL, \n\trepo_id UUID, \n\tcandidate_name VARCHAR(255) NOT NULL, \n\tsession_status VARCHAR(50) NOT NULL, \n\tstarted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, \n\tcompleted_at TIMESTAMP WITHOUT TIME ZONE, \n\tduration_seconds INTEGER NOT NULL, \n\ttechnical_depth_score FLOAT NOT NULL, \n\tclarity_articulation_score FLOAT NOT NULL, \n\tarchitecture_defense_score FLOAT NOT NULL, \n\tfinal_composite_score FLOAT NOT NULL, \n\tdefense_verdict VARCHAR(50) NOT NULL, \n\ttranscript_turns JSON NOT NULL, \n\tkey_takeaways JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tFOREIGN KEY(repo_id) REFERENCES candidate_repos (id) ON DELETE SET NULL\n)",
+ "voice_sessions__indexes": [
+  "CREATE INDEX ix_voice_sessions_candidate_name ON voice_sessions (candidate_name)",
+  "CREATE INDEX ix_voice_sessions_defense_verdict ON voice_sessions (defense_verdict)",
+  "CREATE INDEX ix_voice_sessions_id ON voice_sessions (id)",
+  "CREATE INDEX ix_voice_sessions_repo_id ON voice_sessions (repo_id)",
+  "CREATE INDEX ix_voice_sessions_session_status ON voice_sessions (session_status)",
+  "CREATE INDEX ix_voice_sessions_started_at ON voice_sessions (started_at)"
+ ]
+}
